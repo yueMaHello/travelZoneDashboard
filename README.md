@@ -19,7 +19,8 @@ This is a Nodejs web application using Arcgis Javascript API. It displays a dyna
 1. Use terminal/cmd to go to the root of the App './travelzoneDashboard'. 
 2. Type 'npm start'
 3. On the terminal, it will ask 'Have you changed your dataset? y/n'. If you have just updated 'trips_1.csv', you should input 'y' and the App will run about 5 minutes to create 'output.json'. After 5 minutes, you should be able to browse 'http://localhost:3043'. If you try to browse 'http://localhost:3043' without waiting for data generation, you may still see the old data result. 
-If you haven't updated the data, you should input 'n'. Without updating the dataset, you could browse 'http://localhost:3043' directly without waiting.
+
+If you haven't updated the data, you should input 'n' when the terminal asks 'Have you changed your dataset? y/n'. Without updating the dataset, you could browse 'http://localhost:3043' directly without waiting.
 
 ## Tips:
 #### What is the use of './public/outputData' folder:
