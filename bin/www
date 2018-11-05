@@ -82,7 +82,7 @@ rl.question('Did you renew the dataset? (y/n)', (answer) => {
         lr.on('end',function(){
             var jsonContent = JSON.stringify(data);
             console.log(jsonContent);
-            fs.writeFile('./public/data/output.json',jsonContent,'utf8',function(err){
+            fs.writeFile('./public/outputData/output.json',jsonContent,'utf8',function(err){
                 if(err){
                     console.log('An error occured while writing JSON object to file');
                     return console.log(err)

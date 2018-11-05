@@ -5,14 +5,13 @@ var dwellingTypeDataset;
 var selectedZone;
 
 require([
-    "esri/map","dojo/dom-construct",
-    "esri/layers/FeatureLayer",
-    "esri/dijit/Popup",
-    "esri/dijit/Legend","esri/symbols/SimpleLineSymbol","esri/InfoTemplate","esri/symbols/SimpleFillSymbol",
-    "esri/renderers/ClassBreaksRenderer","esri/symbols/SimpleMarkerSymbol","esri/Color",
-    "dojo/domReady!"
+    "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
+    "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
+    "esri/InfoTemplate", "esri/symbols/SimpleFillSymbol", "esri/renderers/ClassBreaksRenderer",
+    "esri/symbols/SimpleMarkerSymbol", "esri/Color", "dojo/domReady!"
 ], function(Map, domConstruct,FeatureLayer, Popup, Legend,SimpleLineSymbol,InfoTemplate,SimpleFillSymbol,ClassBreaksRenderer,SimpleMarkerSymbol,Color
-) { d3.queue().defer(d3.json,'./data/output.json')
+) {
+    d3.queue().defer(d3.json,'./data/output.json')
               .defer(d3.csv,'./data/RTM3_Pop_Emp_2015.csv')
               .defer(d3.csv,'./data/Population_2015_RTM3.csv')
               .defer(d3.csv,'./data/DwellingType_2015_RTM3.csv')
@@ -49,62 +48,52 @@ require([
 
         var symbol = new SimpleFillSymbol();
         var renderer = new ClassBreaksRenderer(symbol, function(feature){
-            // console.log(feature.attributes.TAZ_New)
             return 1;
-
         });
+
         //legend. If you want to change legend scale or legend color, this part of code needs to be modified
         renderer.addBreak(0, 10, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([65,105,225,0.9]),1)).setColor(new Color([255, 255, 255,0.2])));
         districtLayer.setRenderer(renderer);
         districtLayer.redraw();
-        //add onclick event of district layer
 
+        //add onclick event of district layer
         districtLayer.on('click',function(e){
             selectedZone=e.graphic.attributes["TAZ_New"];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
-
         });
         var dwellingChart = Highcharts.chart('dwelling', {
-
                 chart: {
                     polar: true,
                     type: 'line'
                 },
-
                 title: {
                     text: 'Dwelling Type',
                     x: -80
                 },
-
                 pane: {
                     size: '80%'
                 },
-
                 xAxis: {
                     min: 0,
                     categories: [],
                     tickmarkPlacement: 'on',
                     lineWidth: 0
                 },
-
                 yAxis: {
                     gridLineInterpolation: 'polygon',
                     lineWidth: 0,
                     min: 0
                 },
-
                 tooltip: {
                     shared: true,
                 },
-
                 legend: {
                     align: 'bottom',
                     verticalAlign: 'top',
                     y: 70,
                     layout: 'vertical'
                 },
-
                 series: [{
                     name: 'Number of Household',
                     data: [],
@@ -113,11 +102,7 @@ require([
                 credits: {
                     enabled: false
                 }
-
         });
-
-
-
         var autoOwnershipChart=Highcharts.chart('autoOwnership', {
             chart: {
                 type: 'column'
@@ -330,15 +315,9 @@ require([
             }
             HHChart.series[0].setData(HHSizeArray)
             drawDistanceChart();
-
-
         }
-
     }
-
 });
-
-
 function drawDistanceChart(){
     Highcharts.setOptions({
         chart: {
@@ -359,7 +338,6 @@ function drawDistanceChart(){
             series: {
                 borderWidth: 0,
                 color: '#000',
-
             }
         },
         credits: {
@@ -369,7 +347,6 @@ function drawDistanceChart(){
             enabled: false
         }
     });
-
     $('#avgDist').show();
     $('#avgGHG').show();
     $('#totalEmp').show();
@@ -378,18 +355,14 @@ function drawDistanceChart(){
     $('#avgGHG').height('25%');
     $('#totalEmp').height('25%');
     $('#totalPop').height('25%');
-
-
     var totalDist = 0;
     for(var k in dataset[selectedZone]['Dist']){
         totalDist += dataset[selectedZone]['Dist'][k]
     }
     var totalAmount = 0;
-    for(var k in dataset[selectedZone]['Person#']){
+    for(var k in dataset[selectedZone]['Person#']) {
         totalAmount += dataset[selectedZone]['Person#'][k]
     }
-    console.log(totalDist/totalAmount);
-
 
     var distChart = Highcharts.chart('avgDist', {
         chart: {
@@ -421,12 +394,11 @@ function drawDistanceChart(){
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
         },
 
-        "series": [{
-            "name":'Distance',
-            "data": [{
-
-                "y": totalDist/totalAmount,
-                "target": 30,
+        series: [{
+            name:'Distance',
+            data: [{
+                y: totalDist/totalAmount,
+                target: 30,
             }
             ]
         }],
@@ -490,11 +462,9 @@ function drawDistanceChart(){
             });
             drillDownDistChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
-
                 label.style.cursor = "pointer";
                 label.onclick = function() {drawDistanceChart()}
             })
-
         }
     });
 
@@ -517,11 +487,11 @@ function drawDistanceChart(){
             }],
             title: null
         },
-        "series": [{
-            "name":'Gas Weight',
-            "data": [{
-                "y": totalDist/totalAmount*0.327,
-                "target": 10,
+        series: [{
+            name:'Gas Weight',
+            data: [{
+                y: totalDist/totalAmount*0.327,
+                target: 10,
             }
             ]
         }],
@@ -533,11 +503,9 @@ function drawDistanceChart(){
     {
         label.style.cursor = "pointer";
         label.onclick = function() {
-            // distChart.destroy();
+
             $('#avgGHG').show();
-
             $('#avgGHG').height('100%');
-
             $('#avgDist').hide();
             $('#totalEmp').hide();
             $('#totalPop').hide();
@@ -545,7 +513,6 @@ function drawDistanceChart(){
             for(var purp in dataset[selectedZone]['TourPurp']){
                 ghgByPurpose.push([purp,dataset[selectedZone]['Dist'][purp]*0.327/dataset[selectedZone]['Person#'][purp]])
             }
-
             var drillDownGHGChart = Highcharts.chart('avgGHG', {
                 chart: {
                     type: 'column'
@@ -573,7 +540,6 @@ function drawDistanceChart(){
                     enabled: false
                 },
                 series: [{
-
                     data: ghgByPurpose,
                     dataLabels: {
                         enabled: true,
@@ -581,25 +547,21 @@ function drawDistanceChart(){
                         y: 0, // 10 pixels down from the top
                         style: {
                             fontSize: '8px',
-
                         }
                     }
                 }]
             });
             drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
-
                 label.style.cursor = "pointer";
                 label.onclick = function() {drawDistanceChart()}
             })
-
         }
     });
 
     var totalEmp = Highcharts.chart('totalEmp', {
         chart: {
             marginTop: 20
-
         },
         xAxis: {
             categories: ['Total Jobs']
@@ -616,15 +578,12 @@ function drawDistanceChart(){
             }],
             title: null
         },
-        "series": [{
-            "name":'test',
-            "data": [{
-                "y": Number(popEmpDataset[selectedZone]['Jobs']),
-                "target": 500,
-            }
-            ]
+        series: [{
+            data: [{
+                y: Number(popEmpDataset[selectedZone]['Jobs']),
+                target: 500,
+            }]
         }],
-
         tooltip: {
             pointFormat: '<b>{point.y}</b> (with target at {point.target})'
         }
@@ -633,8 +592,6 @@ function drawDistanceChart(){
     {
         label.style.cursor = "pointer";
         label.onclick = function() {
-            // distChart.destroy();
-
             $('#totalEmp').show();
             $('#totalEmp').height('100%');
             $('#avgDist').hide();
@@ -644,13 +601,12 @@ function drawDistanceChart(){
             for(var purp in dataset[selectedZone]['TourPurp']){
                 ghgByPurpose.push([purp,dataset[selectedZone]['Dist'][purp]*0.327/dataset[selectedZone]['Person#'][purp]])
             }
-
             var drillDownGHGChart = Highcharts.chart('totalEmp', {
                 chart: {
                     type: 'column'
                 },
                 title: {
-                    text: 'I donnot know'
+                    text: 'I donnot know what to draw'
                 },
                 xAxis: {
                     type: 'category',
@@ -680,18 +636,15 @@ function drawDistanceChart(){
                         y: 0, // 10 pixels down from the top
                         style: {
                             fontSize: '8px',
-
                         }
                     }
                 }]
             });
             drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
-
                 label.style.cursor = "pointer";
                 label.onclick = function() {drawDistanceChart()}
             })
-
         }
     });
 
@@ -719,15 +672,13 @@ function drawDistanceChart(){
             }],
             title: null
         },
-        "series": [{
-            "name":'test',
-            "data": [{
-                "y":popOfSelectedZone ,
-                "target": 500,
+        series: [{
+            data: [{
+                y:popOfSelectedZone ,
+                target: 500,
             }
             ]
         }],
-
         tooltip: {
             pointFormat: '<b>{point.y}</b> (with target at {point.target})'
         }
@@ -737,19 +688,15 @@ function drawDistanceChart(){
     {
         label.style.cursor = "pointer";
         label.onclick = function() {
-            // distChart.destroy();
-
             $('#totalPop').show();
             $('#totalPop').height('100%');
             $('#avgDist').hide();
             $('#avgGHG').hide();
             $('#totalEmp').hide();
-
             var popDrilldown =Highcharts.chart('totalPop', {
                 chart: {
                     type: 'variablepie',
                     marginLeft:-5
-
                 },
                 title: {
                     text: 'Age Distribution'
@@ -760,7 +707,6 @@ function drawDistanceChart(){
                     'Age: <b>{point.name}</b><br/>' +
                     'Population: <b>{point.z}</b><br/>'
                 },
-
                 plotOptions: {
                     variablepie: {
                         allowPointSelect: true,
@@ -771,7 +717,6 @@ function drawDistanceChart(){
                             style: {
                                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                             },
-
                         },
                         events: {
                             click: function (event) {
@@ -832,25 +777,13 @@ function drawDistanceChart(){
                         name: '75+',
                         y: Number(populationBreakdown[selectedZone]['age75a']),
                         z:84
-                    },
-
-                    ]
+                    }]
                 }]
             });
         }
     });
 }
-//convert csv data into our desired json format
-function buildMatrixLookup(arr) {
-    var lookup = {};
-    arr.forEach(row => {
-        let ind = row["District"];
-        delete row["District"];
-        lookup[ind] = row;
-    });
 
-    return lookup;
-}
 //seperate an object into a list of values and a list of keys
 function getKeysValuesOfTripsObject(obj){
     var keys = [];
@@ -874,16 +807,13 @@ function convertPopEmpData(popEmpDataset) {
     var TAZTitle = 'TAZ1669';
     var tmpData = {};
     for(var k in popEmpDataset){
-
         var result = {};
         for(var title in popEmpDataset[k]){
             if(title!== TAZTitle){
                 result[title] = popEmpDataset[k][title]
             }
-
         }
         tmpData[popEmpDataset[k][TAZTitle]] = result;
     }
     return tmpData
-
 }
