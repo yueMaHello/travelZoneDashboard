@@ -32,7 +32,7 @@ require([
         var districtLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
-            infoTemplate:new InfoTemplate("Attributes", "${*}")
+            infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
         });
         //LRT layer
         var lrtFeatureLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/LRT/FeatureServer/0",{
@@ -82,6 +82,7 @@ require([
                 },
 
                 xAxis: {
+                    min: 0,
                     categories: [],
                     tickmarkPlacement: 'on',
                     lineWidth: 0
@@ -108,9 +109,15 @@ require([
                     name: 'Number of Household',
                     data: [],
                     pointPlacement: 'on'
-                }]
+                }],
+                credits: {
+                    enabled: false
+                }
 
-            });
+        });
+
+
+
         var autoOwnershipChart=Highcharts.chart('autoOwnership', {
             chart: {
                 type: 'column'
@@ -118,7 +125,6 @@ require([
             title: {
                 text: 'Auto Ownership'
             },
-
             xAxis: {
                 categories: '',
                 title: {
@@ -135,7 +141,6 @@ require([
                     overflow: 'justify'
                 }
             },
-
             tooltip: {
                 shared: true,
             },
@@ -153,7 +158,6 @@ require([
             credits: {
                 enabled: false
             },
-
             series: [{
                 type: 'column',
                 data:  '',
@@ -184,6 +188,9 @@ require([
             legend: {
                 enabled: true
             },
+            credits: {
+                enabled: false
+            }
         });
         var incomeChart = Highcharts.chart('income', {
             chart: {
@@ -225,6 +232,9 @@ require([
                     data: []
                 }
             ],
+            credits: {
+                enabled: false
+            }
 
         });
         var HHChart = Highcharts.chart('HHSize', {
@@ -257,16 +267,36 @@ require([
                 name: 'Percentage',
                 colorByPoint: true,
                 data:[]
-            }]
+            }],
+            credits: {
+                enabled: false
+            }
         });
 
         function drawChart(selectedZone){
-            console.log(dwellingTypeDataset[selectedZone])
-            dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1])
-            console.log(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0])
-            dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0])
+            dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
+            dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
+
+            if(dwellingChart.yAxis[0].getExtremes().dataMax === 0){
+                dwellingChart.yAxis[0].setExtremes(0,10);
+            }
+            else{
+                dwellingChart.yAxis[0].setExtremes();
+            }
+
             var autoArray= [];
             var largerThanFive = 0;
+            if(typeof(dataset[selectedZone])=== 'undefined'){
+                alert('There is no trip data of your selected zone!');
+                // $("#testDiv").dialog({
+                //
+                //     modal: true,
+                //     open: function(event, ui){
+                //         setTimeout("$('#testDiv').dialog('close')",1500);
+                //     }
+                // });
+                //  return false
+            }
             for(var i in dataset[selectedZone]['Own']){
                 if(i>=5){
                     largerThanFive+=dataset[selectedZone]['Own'][i];
@@ -276,13 +306,13 @@ require([
                 }
             }
             autoArray.push(['5+',largerThanFive]);
-            autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1])
-            autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0])
+            autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
+            autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
             var modeArray= [];
             for(var i in dataset[selectedZone]['Mode']){
                 modeArray.push([i,dataset[selectedZone]['Mode'][i]]);
             }
-            modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1])
+            modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
             modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
             var incomeSum=0;
             for (var i in dataset[selectedZone]['IncGrp']){
@@ -572,7 +602,7 @@ function drawDistanceChart(){
 
         },
         xAxis: {
-            categories: ['Total Employment']
+            categories: ['Total Jobs']
         },
         yAxis: {
             plotBands: [{
@@ -810,104 +840,6 @@ function drawDistanceChart(){
         }
     });
 }
-//renew the chart based on the selected zone
-// function drawChart(selectedZone) {
-//     let incomeLine = data.incomeMatrix[selectedZone]; //read income info for the selected zone
-//     let autoLine = data.autoOwnerShipMatrix[selectedZone];//read auto info for the selected zone
-//     let modeLine = data.districtMatrix[selectedZone];//read mode info for the selected zone
-//     //if there are charts already generated, just destroy them
-//     if(typeof(incomeChart)!=='undefined'){
-//         incomeChart.destroy();
-//         modeChart.destroy();
-//         autoChart.destroy();
-//     }
-//     //generate the income chart
-//     var incomeArray = [];
-//     for (var key in incomeLine) {
-//         incomeArray.push([key,parseFloat(incomeLine[key])]);
-//     }
-//     var [k,v]= getKeysValuesOfTripsObject(incomeArray);
-//     var incomeData= {
-//         datasets: [{
-//             data:v,
-//             backgroundColor:randomColorArray
-//         }],
-//         labels:k,
-//     };
-//     // var incomeCtxL = document.getElementById("piechart");
-//     // incomeChart = new Chart(incomeCtxL, {
-//     //     type: 'pie',
-//     //     data:incomeData,
-//     //     options: {
-//     //         responsive: true,
-//     //         legend: {
-//     //             display: true,
-//     //             position: 'right',
-//     //             labels: {
-//     //                 fontColor: 'white'
-//     //             }
-//     //         }
-//     //     }
-//     // });
-//
-//     //generate the auto ownership chart
-//     var autoArray = new Array();
-//     for (var key in autoLine) {
-//         autoArray.push([key,parseFloat(autoLine[key])]);
-//     }
-//     var [k,v]= getKeysValuesOfTripsObject(autoArray);
-//
-//     var autoData= {
-//         datasets: [{
-//             data:v,
-//             backgroundColor:randomColorArray
-//         }],
-//         labels:k,
-//     };
-//     var autoCtxL = document.getElementById("piechart1").getContext('2d');
-//     autoChart = new Chart(autoCtxL, {
-//         type: 'bar',
-//         data:autoData,
-//         options: {
-//             responsive: true,
-//             legend: {
-//                 display: false,
-//                 position: 'right',
-//                 labels: {
-//                     fontColor: 'white'
-//                 }
-//             }
-//         }
-//     });
-//     //generate travel mode chart
-//     var modeArray = new Array();
-//     for (var key in modeLine) {
-//         modeArray.push([key,parseFloat(modeLine[key])]);
-//     }
-//     var [k,v]= getKeysValuesOfTripsObject(modeArray);
-//     var modeData= {
-//         datasets: [{
-//             data:v,
-//             backgroundColor:randomColorArray
-//         }],
-//         labels:k,
-//     };
-//     var modeCtxL = document.getElementById("piechart2").getContext('2d');
-//     modeChart = new Chart(modeCtxL, {
-//         type: 'bar',
-//         data: modeData,
-//         options: {
-//             responsive: true,
-//             legend: {
-//                 display: false,
-//                 position: 'right',
-//                 labels: {
-//                     fontColor: 'white'
-//                 }
-//             }
-//         }
-//     });
-// }
 //convert csv data into our desired json format
 function buildMatrixLookup(arr) {
     var lookup = {};
