@@ -257,6 +257,47 @@ require([
                 enabled: false
             }
         });
+        var tripsByPurposeChart = Highcharts.chart('tripsByPurpose', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+            title: {
+                text: 'Trips By Purpose',
+                // align: 'center',
+                // verticalAlign: 'middle',
+                y: 40
+            },
+            // tooltip: {
+            //     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            // },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: true,
+                        distance: -50,
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'white'
+                        }
+                    },
+                    startAngle: -90,
+                    endAngle: 90,
+                    center: ['50%', '75%'],
+                    size: '110%'
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Trips Amount',
+                innerSize: '50%',
+                data: []
+            }],
+            credits: {
+                enabled: false
+            }
+        });
 
         function drawChart(selectedZone){
             dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
@@ -313,7 +354,14 @@ require([
             for(var i in tripsDataset[selectedZone]['HHSize']){
                 HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
             }
-            HHChart.series[0].setData(HHSizeArray)
+            HHChart.series[0].setData(HHSizeArray);
+
+            var tripsByPurposeArray = [];
+            for(var i in tripsDataset[selectedZone]['TourPurp']){
+                tripsByPurposeArray.push([i,tripsDataset[selectedZone]['TourPurp'][i]])
+            }
+            tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
+
             drawDistanceChart();
         }
     }
@@ -360,8 +408,8 @@ function drawDistanceChart(){
         totalDist += tripsDataset[selectedZone]['Dist'][k]
     }
     var totalAmount = 0;
-    for(var k in tripsDataset[selectedZone]['Person#']) {
-        totalAmount += tripsDataset[selectedZone]['Person#'][k]
+    for(var k in tripsDataset[selectedZone]['TourPurp']) {
+        totalAmount += tripsDataset[selectedZone]['TourPurp'][k]
     }
 
     var distChart = Highcharts.chart('avgDist', {
@@ -654,8 +702,7 @@ function drawDistanceChart(){
     }
     var totalPop = Highcharts.chart('totalPop', {
         chart: {
-            marginTop: 20
-
+            marginTop: 20,
         },
         xAxis: {
             categories: ['Total Population']
@@ -695,8 +742,9 @@ function drawDistanceChart(){
             $('#totalEmp').hide();
             var popDrilldown =Highcharts.chart('totalPop', {
                 chart: {
+                    marginLeft: 3,
+
                     type: 'variablepie',
-                    marginLeft:-5
                 },
                 title: {
                     text: 'Age Distribution'
@@ -709,6 +757,7 @@ function drawDistanceChart(){
                 },
                 plotOptions: {
                     variablepie: {
+                        size:'60%',
                         allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
@@ -726,9 +775,8 @@ function drawDistanceChart(){
                     }
                 },
                 series: [{
-                    minPointSize: 10,
+
                     innerSize: '20%',
-                    zMin: 0,
                     data: [{
                         name: '0~4',
                         y: Number(populationBreakdown[selectedZone]['age04']),
