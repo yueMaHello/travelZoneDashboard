@@ -3,7 +3,6 @@ var popEmpDataset;
 var populationBreakdown;
 var dwellingTypeDataset;
 var selectedZone;
-
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
@@ -95,7 +94,7 @@ require([
                     layout: 'vertical'
                 },
                 series: [{
-                    name: 'Number of Household',
+                    name: 'Number of Households',
                     data: [],
                     pointPlacement: 'on'
                 }],
@@ -144,6 +143,7 @@ require([
                 enabled: false
             },
             series: [{
+                name:'Amount',
                 type: 'column',
                 data:  '',
                 showInLegend: false
@@ -160,11 +160,11 @@ require([
             title: {
                 text: 'Travel Mode'
             },
-
             xAxis: {
                 categories: []
             },
             series: [{
+                name:'Amount',
                 type: 'column',
                 colorByPoint: true,
                 data: [],
@@ -220,7 +220,6 @@ require([
             credits: {
                 enabled: false
             }
-
         });
         var HHChart = Highcharts.chart('HHSize', {
             chart: {
@@ -269,9 +268,6 @@ require([
                 // verticalAlign: 'middle',
                 y: 40
             },
-            // tooltip: {
-            //     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            // },
             plotOptions: {
                 pie: {
                     dataLabels: {
@@ -450,7 +446,6 @@ function drawDistanceChart(){
             }
             ]
         }],
-
     });
 
     distChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
@@ -743,7 +738,6 @@ function drawDistanceChart(){
             var popDrilldown =Highcharts.chart('totalPop', {
                 chart: {
                     marginLeft: 3,
-
                     type: 'variablepie',
                 },
                 title: {
@@ -775,7 +769,6 @@ function drawDistanceChart(){
                     }
                 },
                 series: [{
-
                     innerSize: '20%',
                     data: [{
                         name: '0~4',
