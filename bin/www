@@ -34,13 +34,13 @@ const rl = readline.createInterface({
 var server = http.createServer(app);
 var a = null;
 
-rl.question('Did you renew the dataset? (y/n)', (answer) => {
+rl.question('Did you renew the tripsDataset? (y/n)', (answer) => {
 
     rl.close();
     a = answer;
 
     if(a==='y'){
-        console.log('The App will read the newest dataset. It may take several minutes.');
+        console.log('The App will read the newest tripsDataset. It may take several minutes.');
         /**
          * Listen on provided port, on all network interfaces.
          */

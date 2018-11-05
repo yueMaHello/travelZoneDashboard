@@ -18,15 +18,15 @@ This is a Nodejs web application using Arcgis Javascript API. It displays a dyna
 ## Run
 1. Use terminal/cmd to go to the root of the App './travelzoneDashboard'. 
 2. Type 'npm start'
-3. On the terminal, it will ask 'Have you changed your dataset? y/n'. If you have just updated 'trips_1.csv', you should input 'y' and the App will run about 5 minutes to create 'output.json'. After 5 minutes, you should be able to browse 'http://localhost:3043'. If you haven't updated the data, you should input 'n'. Without updating the dataset, you could browse 'http://localhost:3043' directly without waiting.
+3. On the terminal, it will ask 'Have you changed your tripsDataset? y/n'. If you have just updated 'trips_1.csv', you should input 'y' and the App will run about 5 minutes to create 'output.json'. After 5 minutes, you should be able to browse 'http://localhost:3043'. If you haven't updated the data, you should input 'n'. Without updating the tripsDataset, you could browse 'http://localhost:3043' directly without waiting.
 
 ## Tips:
-#### After you change the dataset:
-1. After you change the dataset in './public/data' folder, you should go to the terminal, terminate it if it is running, and rerun it by typing 'npm start'. Then follow the third step in 'Run' section.
+#### After you change the tripsDataset:
+1. After you change the tripsDataset in './public/data' folder, you should go to the terminal, terminate it if it is running, and rerun it by typing 'npm start'. Then follow the third step in 'Run' section.
 
 #### If you want to update the TravelZoneLayer shape file:
  1. The map layer is not stored in localhost. It is stored in the arcgis online server.
  2. In './public/javascript/main.js', you can find the current travel zone layer: 'https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0'. If you want to change it to another layer, you can create you own arcgis online account and upload the layer to the arcgis server. You need to replace the url into a new one. You can also ask Sandeep to access Yue Ma's arcgis account.
       
-#### Woops, the App can't run after changing a new dataset:
+#### Woops, the App can't run after changing a new tripsDataset:
  1. You need to restart the server from terminal/cmd (Rerun 'npm start').

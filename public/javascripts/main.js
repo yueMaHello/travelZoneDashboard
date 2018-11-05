@@ -1,4 +1,4 @@
-var dataset;
+var tripsDataset;
 var popEmpDataset;
 var populationBreakdown;
 var dwellingTypeDataset;
@@ -11,13 +11,13 @@ require([
     "esri/symbols/SimpleMarkerSymbol", "esri/Color", "dojo/domReady!"
 ], function(Map, domConstruct,FeatureLayer, Popup, Legend,SimpleLineSymbol,InfoTemplate,SimpleFillSymbol,ClassBreaksRenderer,SimpleMarkerSymbol,Color
 ) {
-    d3.queue().defer(d3.json,'./data/output.json')
+    d3.queue().defer(d3.json,'./outputData/output.json')
               .defer(d3.csv,'./data/RTM3_Pop_Emp_2015.csv')
               .defer(d3.csv,'./data/Population_2015_RTM3.csv')
               .defer(d3.csv,'./data/DwellingType_2015_RTM3.csv')
               .await(loadData);
     function loadData(error,outputData,popEmpData,popBreak,dwellingData){
-        dataset = outputData;
+        tripsDataset = outputData;
         popEmpDataset = convertPopEmpData(popEmpData);
         populationBreakdown = convertPopEmpData(popBreak);
         dwellingTypeDataset = convertPopEmpData(dwellingData);
@@ -28,7 +28,7 @@ require([
             minZoom:6,
         });
 
-        var districtLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
+        var travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
             infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
@@ -40,7 +40,7 @@ require([
         });
 
         map.on('load',function(){
-            map.addLayer(districtLayer);
+            map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
             selectedZone = '101';
             drawChart(selectedZone);
@@ -53,11 +53,11 @@ require([
 
         //legend. If you want to change legend scale or legend color, this part of code needs to be modified
         renderer.addBreak(0, 10, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([65,105,225,0.9]),1)).setColor(new Color([255, 255, 255,0.2])));
-        districtLayer.setRenderer(renderer);
-        districtLayer.redraw();
+        travelZoneLayer.setRenderer(renderer);
+        travelZoneLayer.redraw();
 
         //add onclick event of district layer
-        districtLayer.on('click',function(e){
+        travelZoneLayer.on('click',function(e){
             selectedZone=e.graphic.attributes["TAZ_New"];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
@@ -271,7 +271,7 @@ require([
 
             var autoArray= [];
             var largerThanFive = 0;
-            if(typeof(dataset[selectedZone])=== 'undefined'){
+            if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
                 // $("#testDiv").dialog({
                 //
@@ -282,36 +282,36 @@ require([
                 // });
                 //  return false
             }
-            for(var i in dataset[selectedZone]['Own']){
+            for(var i in tripsDataset[selectedZone]['Own']){
                 if(i>=5){
-                    largerThanFive+=dataset[selectedZone]['Own'][i];
+                    largerThanFive+=tripsDataset[selectedZone]['Own'][i];
                 }
                 else{
-                    autoArray.push([i,dataset[selectedZone]['Own'][i]]);
+                    autoArray.push([i,tripsDataset[selectedZone]['Own'][i]]);
                 }
             }
             autoArray.push(['5+',largerThanFive]);
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
             var modeArray= [];
-            for(var i in dataset[selectedZone]['Mode']){
-                modeArray.push([i,dataset[selectedZone]['Mode'][i]]);
+            for(var i in tripsDataset[selectedZone]['Mode']){
+                modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);
             }
             modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
             modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
             var incomeSum=0;
-            for (var i in dataset[selectedZone]['IncGrp']){
-                incomeSum += dataset[selectedZone]['IncGrp'][i];
+            for (var i in tripsDataset[selectedZone]['IncGrp']){
+                incomeSum += tripsDataset[selectedZone]['IncGrp'][i];
             }
             var incomeArray = [];
-            for(var i in dataset[selectedZone]['IncGrp']){
-                incomeArray.push([i,dataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
+            for(var i in tripsDataset[selectedZone]['IncGrp']){
+                incomeArray.push([i,tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
             }
             incomeChart.series[0].setData(incomeArray);
 
             var HHSizeArray = [];
-            for(var i in dataset[selectedZone]['HHSize']){
-                HHSizeArray.push([i,dataset[selectedZone]['HHSize'][i]])
+            for(var i in tripsDataset[selectedZone]['HHSize']){
+                HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
             }
             HHChart.series[0].setData(HHSizeArray)
             drawDistanceChart();
@@ -356,12 +356,12 @@ function drawDistanceChart(){
     $('#totalEmp').height('25%');
     $('#totalPop').height('25%');
     var totalDist = 0;
-    for(var k in dataset[selectedZone]['Dist']){
-        totalDist += dataset[selectedZone]['Dist'][k]
+    for(var k in tripsDataset[selectedZone]['Dist']){
+        totalDist += tripsDataset[selectedZone]['Dist'][k]
     }
     var totalAmount = 0;
-    for(var k in dataset[selectedZone]['Person#']) {
-        totalAmount += dataset[selectedZone]['Person#'][k]
+    for(var k in tripsDataset[selectedZone]['Person#']) {
+        totalAmount += tripsDataset[selectedZone]['Person#'][k]
     }
 
     var distChart = Highcharts.chart('avgDist', {
@@ -416,8 +416,8 @@ function drawDistanceChart(){
             $('#avgGHG').hide();
             $('#totalPop').hide();
             var distByPurpose = [];
-            for(var purp in dataset[selectedZone]['TourPurp']){
-                distByPurpose.push([purp,dataset[selectedZone]['Dist'][purp]/dataset[selectedZone]['Person#'][purp]])
+            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+                distByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
             }
             var drillDownDistChart = Highcharts.chart('avgDist', {
                 chart: {
@@ -510,8 +510,8 @@ function drawDistanceChart(){
             $('#totalEmp').hide();
             $('#totalPop').hide();
             var ghgByPurpose = [];
-            for(var purp in dataset[selectedZone]['TourPurp']){
-                ghgByPurpose.push([purp,dataset[selectedZone]['Dist'][purp]*0.327/dataset[selectedZone]['Person#'][purp]])
+            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+                ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
             var drillDownGHGChart = Highcharts.chart('avgGHG', {
                 chart: {
@@ -598,8 +598,8 @@ function drawDistanceChart(){
             $('#avgGHG').hide();
             $('#totalPop').hide();
             var ghgByPurpose = [];
-            for(var purp in dataset[selectedZone]['TourPurp']){
-                ghgByPurpose.push([purp,dataset[selectedZone]['Dist'][purp]*0.327/dataset[selectedZone]['Person#'][purp]])
+            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+                ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
             var drillDownGHGChart = Highcharts.chart('totalEmp', {
                 chart: {
