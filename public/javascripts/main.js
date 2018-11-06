@@ -1,8 +1,8 @@
-var tripsDataset;
-var popEmpDataset;
-var populationBreakdown;
-var dwellingTypeDataset;
-var selectedZone;
+let tripsDataset;
+let popEmpDataset;
+let populationBreakdown;
+let dwellingTypeDataset;
+let selectedZone;
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
@@ -20,20 +20,20 @@ require([
         popEmpDataset = convertPopEmpData(popEmpData);
         populationBreakdown = convertPopEmpData(popBreak);
         dwellingTypeDataset = convertPopEmpData(dwellingData);
-        var map = new Map("mapDiv", {
+        let map = new Map("mapDiv", {
             basemap: "gray-vector",
             center: [-113.4909, 53.5444],
             zoom: 8,
             minZoom:6,
         });
 
-        var travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
+        let travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
             infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
         });
         //LRT layer
-        var lrtFeatureLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/LRT/FeatureServer/0",{
+        let lrtFeatureLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/LRT/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
         });
@@ -45,8 +45,8 @@ require([
             drawChart(selectedZone);
         });
 
-        var symbol = new SimpleFillSymbol();
-        var renderer = new ClassBreaksRenderer(symbol, function(feature){
+        let symbol = new SimpleFillSymbol();
+        let renderer = new ClassBreaksRenderer(symbol, function(feature){
             return 1;
         });
 
@@ -61,7 +61,7 @@ require([
             // Draw the chart and set the chart values
             drawChart(selectedZone);
         });
-        var dwellingChart = Highcharts.chart('dwelling', {
+        let dwellingChart = Highcharts.chart('dwelling', {
                 chart: {
                     polar: true,
                     type: 'line'
@@ -102,7 +102,7 @@ require([
                     enabled: false
                 }
         });
-        var autoOwnershipChart=Highcharts.chart('autoOwnership', {
+        let autoOwnershipChart=Highcharts.chart('autoOwnership', {
             chart: {
                 type: 'column'
             },
@@ -152,7 +152,7 @@ require([
             //     enabled: false
             // }
         });
-        var modeChart = Highcharts.chart('mode', {
+        let modeChart = Highcharts.chart('mode', {
             chart: {
                 inverted: false,
                 polar: true
@@ -177,7 +177,7 @@ require([
                 enabled: false
             }
         });
-        var incomeChart = Highcharts.chart('income', {
+        let incomeChart = Highcharts.chart('income', {
             chart: {
                 type: 'column'
             },
@@ -221,7 +221,7 @@ require([
                 enabled: false
             }
         });
-        var HHChart = Highcharts.chart('HHSize', {
+        let HHChart = Highcharts.chart('HHSize', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -262,7 +262,7 @@ require([
                 drillUpText: 'Back'
             }
         });
-        var tripsByPurposeChart = Highcharts.chart('tripsByPurpose', {
+        let tripsByPurposeChart = Highcharts.chart('tripsByPurpose', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: 0,
@@ -308,7 +308,7 @@ require([
         });
 
         function drawChart(selectedZone){
-            $('.highcharts-drillup-button').click()
+            $('.highcharts-drillup-button').click();
             tripsByPurposeChart.redraw();
             dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
             dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
@@ -320,13 +320,13 @@ require([
                 dwellingChart.yAxis[0].setExtremes();
             }
 
-            var autoArray= [];
-            var largerThanFive = 0;
+            let autoArray= [];
+            let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
 
             }
-            for(var i in tripsDataset[selectedZone]['Own']){
+            for(let i in tripsDataset[selectedZone]['Own']){
                 if(i>=5){
                     largerThanFive+=tripsDataset[selectedZone]['Own'][i];
                 }
@@ -337,37 +337,35 @@ require([
             autoArray.push(['5+',largerThanFive]);
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
-            var modeArray= [];
-            for(var i in tripsDataset[selectedZone]['Mode']){
+            let modeArray= [];
+            for(let i in tripsDataset[selectedZone]['Mode']){
                 modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);
             }
             modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
             modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
-            var incomeSum=0;
-            for (var i in tripsDataset[selectedZone]['IncGrp']){
+            let incomeSum=0;
+            for (let i in tripsDataset[selectedZone]['IncGrp']){
                 incomeSum += tripsDataset[selectedZone]['IncGrp'][i];
             }
-            var incomeArray = [];
-            for(var i in tripsDataset[selectedZone]['IncGrp']){
+            let incomeArray = [];
+            for(let i in tripsDataset[selectedZone]['IncGrp']){
                 incomeArray.push([i,tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
             }
             incomeChart.series[0].setData(incomeArray);
 
-            var HHSizeArray = [];
-            for(var i in tripsDataset[selectedZone]['HHSize']){
+            let HHSizeArray = [];
+            for(let i in tripsDataset[selectedZone]['HHSize']){
                 HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
             }
             HHChart.series[0].setData(HHSizeArray);
 
-            var tripsByPurposeArray = [];
-            for(var i in tripsDataset[selectedZone]['TourPurp']){
+            let tripsByPurposeArray = [];
+            for(let i in tripsDataset[selectedZone]['TourPurp']){
                 tripsByPurposeArray.push({'name':i,'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
             }
-            console.log(tripsByPurposeArray)
             tripsByPurposeChart.xAxis[0].setCategories(getCatergoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
             tripsByPurposeChart.options.drilldown.series = generateDrilldownSeries(tripsDataset[selectedZone]['TourDistByPurp']);
             tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
-            console.log(tripsByPurposeChart.options)
             drawDistanceChart();
         }
     }
@@ -409,16 +407,16 @@ function drawDistanceChart(){
     $('#avgGHG').height('25%');
     $('#totalEmp').height('25%');
     $('#totalPop').height('25%');
-    var totalDist = 0;
-    for(var k in tripsDataset[selectedZone]['Dist']){
+    let totalDist = 0;
+    for(let k in tripsDataset[selectedZone]['Dist']){
         totalDist += tripsDataset[selectedZone]['Dist'][k]
     }
-    var totalAmount = 0;
-    for(var k in tripsDataset[selectedZone]['TourPurp']) {
+    let totalAmount = 0;
+    for(let k in tripsDataset[selectedZone]['TourPurp']) {
         totalAmount += tripsDataset[selectedZone]['TourPurp'][k]
     }
 
-    var distChart = Highcharts.chart('avgDist', {
+    let distChart = Highcharts.chart('avgDist', {
         chart: {
             marginTop: 20
         },
@@ -468,11 +466,11 @@ function drawDistanceChart(){
             $('#totalEmp').hide();
             $('#avgGHG').hide();
             $('#totalPop').hide();
-            var distByPurpose = [];
-            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+            let distByPurpose = [];
+            for(let purp in tripsDataset[selectedZone]['TourPurp']){
                 distByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
             }
-            var drillDownDistChart = Highcharts.chart('avgDist', {
+            let drillDownDistChart = Highcharts.chart('avgDist', {
                 chart: {
                     type: 'column'
                 },
@@ -521,7 +519,7 @@ function drawDistanceChart(){
         }
     });
 
-    var ghgChart = Highcharts.chart('avgGHG', {
+    let ghgChart = Highcharts.chart('avgGHG', {
         chart: {
             marginTop: 20
         },
@@ -562,11 +560,11 @@ function drawDistanceChart(){
             $('#avgDist').hide();
             $('#totalEmp').hide();
             $('#totalPop').hide();
-            var ghgByPurpose = [];
-            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+            let ghgByPurpose = [];
+            for(let purp in tripsDataset[selectedZone]['TourPurp']){
                 ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
-            var drillDownGHGChart = Highcharts.chart('avgGHG', {
+            let drillDownGHGChart = Highcharts.chart('avgGHG', {
                 chart: {
                     type: 'column'
                 },
@@ -612,7 +610,7 @@ function drawDistanceChart(){
         }
     });
 
-    var totalEmp = Highcharts.chart('totalEmp', {
+    let totalEmp = Highcharts.chart('totalEmp', {
         chart: {
             marginTop: 20
         },
@@ -650,11 +648,11 @@ function drawDistanceChart(){
             $('#avgDist').hide();
             $('#avgGHG').hide();
             $('#totalPop').hide();
-            var ghgByPurpose = [];
-            for(var purp in tripsDataset[selectedZone]['TourPurp']){
+            let ghgByPurpose = [];
+            for(let purp in tripsDataset[selectedZone]['TourPurp']){
                 ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
-            var drillDownGHGChart = Highcharts.chart('totalEmp', {
+            let drillDownGHGChart = Highcharts.chart('totalEmp', {
                 chart: {
                     type: 'column'
                 },
@@ -701,11 +699,11 @@ function drawDistanceChart(){
         }
     });
 
-    var popOfSelectedZone = 0;
-    for(var i in populationBreakdown[selectedZone]){
+    let popOfSelectedZone = 0;
+    for(let i in populationBreakdown[selectedZone]){
         popOfSelectedZone+=Number(populationBreakdown[selectedZone][i])
     }
-    var totalPop = Highcharts.chart('totalPop', {
+    let totalPop = Highcharts.chart('totalPop', {
         chart: {
             marginTop: 20,
         },
@@ -745,7 +743,7 @@ function drawDistanceChart(){
             $('#avgDist').hide();
             $('#avgGHG').hide();
             $('#totalEmp').hide();
-            var popDrilldown =Highcharts.chart('totalPop', {
+            let popDrilldown =Highcharts.chart('totalPop', {
                 chart: {
                     marginLeft: 3,
                     type: 'variablepie',
@@ -837,29 +835,29 @@ function drawDistanceChart(){
 
 //seperate an object into a list of values and a list of keys
 function getKeysValuesOfTripsObject(obj){
-    var keys = [];
-    var values = [];
-    for(var k in obj){
+    let keys = [];
+    let values = [];
+    for(let k in obj){
         keys.push(obj[k][0]);
         values.push(Number(obj[k][1]));
     }
     return [keys,values];
 }
 function getKeysValuesOfObject(obj){
-    var keys = [];
-    var values = [];
-    for(var k in obj){
+    let keys = [];
+    let values = [];
+    for(let k in obj){
         keys.push(k)
         values.push(Number(obj[k]))
     }
     return [keys,values];
 }
 function convertPopEmpData(popEmpDataset) {
-    var TAZTitle = 'TAZ1669';
-    var tmpData = {};
-    for(var k in popEmpDataset){
-        var result = {};
-        for(var title in popEmpDataset[k]){
+    let TAZTitle = 'TAZ1669';
+    let tmpData = {};
+    for(let k in popEmpDataset){
+        let result = {};
+        for(let title in popEmpDataset[k]){
             if(title!== TAZTitle){
                 result[title] = popEmpDataset[k][title]
             }
@@ -869,10 +867,10 @@ function convertPopEmpData(popEmpDataset) {
     return tmpData
 }
 function generateDrilldownSeries(distPurpArray){
-    var result = []
-    for(var k in distPurpArray){
+    let result = []
+    for(let k in distPurpArray){
         distArray = []
-        for(var distK in distPurpArray[k]){
+        for(let distK in distPurpArray[k]){
             distArray.push({'name':distK,'y':distPurpArray[k][distK]})
         }
         result.push({
@@ -886,9 +884,9 @@ function generateDrilldownSeries(distPurpArray){
 
 }
 function getCatergoriesOfDistByPurp(distPurpArray){
-    var result = []
-    for(var k in distPurpArray){
-        for(var distK in distPurpArray[k]){
+    let result = []
+    for(let k in distPurpArray){
+        for(let distK in distPurpArray[k]){
             result.push(distK+'km')
         }
         return result
