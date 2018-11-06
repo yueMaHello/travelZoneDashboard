@@ -5,16 +5,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-<title>District Dashboard</title>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-
-
-ui.min.js"></script><script src="https://d3js.org/d3.v4.min.js"></script>
+<title>Travel Zone Dashboard</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/bullet.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
 <link rel="stylesheet" href="./stylesheets/style.css">
 <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
 <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
@@ -27,12 +27,9 @@ ui.min.js"></script><script src="https://d3js.org/d3.v4.min.js"></script>
     <div id="verticalCharts">
         <div id="chart1">
             <div class='subchart' id = 'tripsByPurpose'></div>
-
         </div>
         <div id="chart2">
-
             <div class='subchart' id = 'mode'></div>
-
         </div>
     </div>
 
@@ -40,9 +37,7 @@ ui.min.js"></script><script src="https://d3js.org/d3.v4.min.js"></script>
         <div id = title>
             <p id="titleText">Travel Zone Dashboard</p>
         </div>
-        <div id="mapDiv">
-
-        </div>
+        <div id="mapDiv"></div>
     </div>
 </div>
 <div id="div2">
@@ -56,27 +51,22 @@ ui.min.js"></script><script src="https://d3js.org/d3.v4.min.js"></script>
         </div>
     </div>
     <div id="chart4">
-        <div class='subchart' id = 'dwelling'>
-        </div>
+        <div class='subchart' id = 'dwelling'></div>
     </div>
     <div id="chart5">
         <div class='subchart' id = 'autoOwnership'></div>
     </div>
     <div id="chart6">
         <div class='subchart' id = 'HHSize'></div>
-
     </div>
     <div id="chart7">
         <div class='subchart' id = 'income'></div>
-
     </div>
 </div>
 
 <div id="testDiv" >
     There is no trip data of your selected zone.
 </div>
-
-<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 <script src="javascripts/main.js"></script>
 

@@ -57,7 +57,7 @@ require([
 
         //add onclick event of district layer
         travelZoneLayer.on('click',function(e){
-            selectedZone=e.graphic.attributes["TAZ_New"];//get selected zone
+            selectedZone = e.graphic.attributes["TAZ_New"];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
         });
@@ -256,12 +256,20 @@ require([
                 enabled: false
             }
         });
+
+        Highcharts.setOptions({
+            lang: {
+                drillUpText: 'Back'
+            }
+        });
         var tripsByPurposeChart = Highcharts.chart('tripsByPurpose', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: 0,
-                plotShadow: false
+                plotShadow: false,
+
             },
+
             title: {
                 text: 'Trips By Purpose',
                 // align: 'center',
@@ -292,10 +300,16 @@ require([
             }],
             credits: {
                 enabled: false
-            }
+            },
+            drilldown:{
+                series: []
+            },
+
         });
 
         function drawChart(selectedZone){
+            $('.highcharts-drillup-button').click()
+            tripsByPurposeChart.redraw();
             dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
             dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
 
@@ -310,14 +324,7 @@ require([
             var largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
-                // $("#testDiv").dialog({
-                //
-                //     modal: true,
-                //     open: function(event, ui){
-                //         setTimeout("$('#testDiv').dialog('close')",1500);
-                //     }
-                // });
-                //  return false
+
             }
             for(var i in tripsDataset[selectedZone]['Own']){
                 if(i>=5){
@@ -354,10 +361,13 @@ require([
 
             var tripsByPurposeArray = [];
             for(var i in tripsDataset[selectedZone]['TourPurp']){
-                tripsByPurposeArray.push([i,tripsDataset[selectedZone]['TourPurp'][i]])
+                tripsByPurposeArray.push({'name':i,'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
             }
+            console.log(tripsByPurposeArray)
+            tripsByPurposeChart.xAxis[0].setCategories(getCatergoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
+            tripsByPurposeChart.options.drilldown.series = generateDrilldownSeries(tripsDataset[selectedZone]['TourDistByPurp']);
             tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
-
+            console.log(tripsByPurposeChart.options)
             drawDistanceChart();
         }
     }
@@ -857,4 +867,31 @@ function convertPopEmpData(popEmpDataset) {
         tmpData[popEmpDataset[k][TAZTitle]] = result;
     }
     return tmpData
+}
+function generateDrilldownSeries(distPurpArray){
+    var result = []
+    for(var k in distPurpArray){
+        distArray = []
+        for(var distK in distPurpArray[k]){
+            distArray.push({'name':distK,'y':distPurpArray[k][distK]})
+        }
+        result.push({
+            id:k,
+            type:'line',
+            name: 'Trips Amount',
+            data:distArray
+        })
+    }
+    return result
+
+}
+function getCatergoriesOfDistByPurp(distPurpArray){
+    var result = []
+    for(var k in distPurpArray){
+        for(var distK in distPurpArray[k]){
+            result.push(distK+'km')
+        }
+        return result
+    }
+
 }
