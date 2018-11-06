@@ -14,7 +14,6 @@ const LineByLineReader = require('line-by-line');
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3043');
 app.set('port', port);
 console.log('The app is running on port '+port);
@@ -30,29 +29,26 @@ const rl = readline.createInterface({
 });
 var server = http.createServer(app);
 var a = null;
-
-rl.question('Did you renew the tripsDataset? (y/n)', (answer) => {
-
+//ask the Admin whether he just updated the dataset,
+//If he updated the dataset before starting the app server, he should answer 'y'
+//Then the app will generate output.json based on his new trip dataset
+rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
     rl.close();
     a = answer;
 
     if(a==='y'){
         console.log('The App will read the newest tripsDataset. It may take several minutes.');
-        /**
-         * Listen on provided port, on all network interfaces.
-         */
+        //read csv file line by line
         var lr = new LineByLineReader('./public/data/trips_1.csv');
         lr.on('error',function(err){});
         lr.on('line',function(line) {
             line = line.split(",");
             console.log(line[6]);
             initializeData(line)
-
-        })
-
+        });
+        //finish reading. Write the result into output.json file
         lr.on('end',function(){
             var jsonContent = JSON.stringify(data);
-            console.log(jsonContent);
             fs.writeFile('./public/outputData/output.json',jsonContent,'utf8',function(err){
                 if(err){
                     console.log('An error occured while writing JSON object to file');
@@ -60,7 +56,7 @@ rl.question('Did you renew the tripsDataset? (y/n)', (answer) => {
                 }
             });
             console.log('Json file has been saved');
-
+            //start the server
             server.listen(port);
             server.on('error', onError);
             server.on('listening', onListening);
@@ -74,8 +70,9 @@ rl.question('Did you renew the tripsDataset? (y/n)', (answer) => {
     }
 });
 function initializeData(line){
-
+    //if this zone hasn't been initialized
     if (!(line[6] in data)) {
+        //this is info of a single travel zone
         data[line[6]] = {
             'Person#': {'P': 0, 'C': 0, 'W': 0, 'L': 0, 'H': 0, 'R': 0, 'Q': 0, 'T': 0, 'S': 0},
             'Mode': {'Walk': 0, 'HOV2': 0, 'SB': 0, 'PNR': 0, 'WAT': 0, 'SOV': 0, 'Bike': 0, 'HOV3': 0, 'KNR': 0},
@@ -101,6 +98,7 @@ function initializeData(line){
 
 
 }
+//convert this line's record and store into json format
 function callback(line){
 
     if(!Number(line[0])){
@@ -139,7 +137,6 @@ function callback(line){
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
     var port = parseInt(val, 10);
 
@@ -159,7 +156,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;

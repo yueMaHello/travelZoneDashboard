@@ -1,8 +1,8 @@
-let tripsDataset;
-let popEmpDataset;
-let populationBreakdown;
-let dwellingTypeDataset;
-let selectedZone;
+let tripsDataset; //store ./outputData/output.json
+let popEmpDataset;//store ./data/RTM3_Pop_Emp_2015.csv
+let populationBreakdown;//store ./data/Population_2015_RTM3.csv
+let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
+let selectedZone;//store the zone being selected
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
@@ -17,16 +17,17 @@ require([
               .await(loadData);
     function loadData(error,outputData,popEmpData,popBreak,dwellingData){
         tripsDataset = outputData;
-        popEmpDataset = convertPopEmpData(popEmpData);
-        populationBreakdown = convertPopEmpData(popBreak);
-        dwellingTypeDataset = convertPopEmpData(dwellingData);
+        popEmpDataset = convertCSVData(popEmpData);
+        populationBreakdown = convertCSVData(popBreak);
+        dwellingTypeDataset = convertCSVData(dwellingData);
+
         let map = new Map("mapDiv", {
             basemap: "gray-vector",
             center: [-113.4909, 53.5444],
             zoom: 8,
             minZoom:6,
         });
-
+        //travel zone layer
         let travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
@@ -37,20 +38,19 @@ require([
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
         });
-
+        //when map is loading
         map.on('load',function(){
             map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
-            selectedZone = '101';
+            selectedZone = '101';//default zone
             drawChart(selectedZone);
         });
 
+        //add color to the travel zone layer
         let symbol = new SimpleFillSymbol();
         let renderer = new ClassBreaksRenderer(symbol, function(feature){
             return 1;
         });
-
-        //legend. If you want to change legend scale or legend color, this part of code needs to be modified
         renderer.addBreak(0, 10, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([65,105,225,0.9]),1)).setColor(new Color([255, 255, 255,0.2])));
         travelZoneLayer.setRenderer(renderer);
         travelZoneLayer.redraw();
@@ -61,6 +61,7 @@ require([
             // Draw the chart and set the chart values
             drawChart(selectedZone);
         });
+        //initialize dwelling chart
         let dwellingChart = Highcharts.chart('dwelling', {
                 chart: {
                     polar: true,
@@ -102,6 +103,7 @@ require([
                     enabled: false
                 }
         });
+        //initialize autoOwnership chart
         let autoOwnershipChart=Highcharts.chart('autoOwnership', {
             chart: {
                 type: 'column'
@@ -152,6 +154,7 @@ require([
             //     enabled: false
             // }
         });
+        //initialize mode chart
         let modeChart = Highcharts.chart('mode', {
             chart: {
                 inverted: false,
@@ -177,6 +180,7 @@ require([
                 enabled: false
             }
         });
+        //initialize income chart
         let incomeChart = Highcharts.chart('income', {
             chart: {
                 type: 'column'
@@ -221,6 +225,7 @@ require([
                 enabled: false
             }
         });
+        //initialize Household chart
         let HHChart = Highcharts.chart('HHSize', {
             chart: {
                 plotBackgroundColor: null,
@@ -306,20 +311,20 @@ require([
             },
 
         });
-
+        //update chartds based on selected zone
         function drawChart(selectedZone){
+            //automatically click drilldown back button
             $('.highcharts-drillup-button').click();
-            tripsByPurposeChart.redraw();
+            //update dwelling chart data
             dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
             dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
-
             if(dwellingChart.yAxis[0].getExtremes().dataMax === 0){
                 dwellingChart.yAxis[0].setExtremes(0,10);
             }
             else{
                 dwellingChart.yAxis[0].setExtremes();
             }
-
+            //update autoOwnerShip chart
             let autoArray= [];
             let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
@@ -327,6 +332,7 @@ require([
 
             }
             for(let i in tripsDataset[selectedZone]['Own']){
+                //5+ condition
                 if(i>=5){
                     largerThanFive+=tripsDataset[selectedZone]['Own'][i];
                 }
@@ -337,12 +343,15 @@ require([
             autoArray.push(['5+',largerThanFive]);
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
+
+            //update mode chart data
             let modeArray= [];
             for(let i in tripsDataset[selectedZone]['Mode']){
-                modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);
-            }
+                modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);}
             modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
             modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
+
+            //update income chart data
             let incomeSum=0;
             for (let i in tripsDataset[selectedZone]['IncGrp']){
                 incomeSum += tripsDataset[selectedZone]['IncGrp'][i];
@@ -353,24 +362,33 @@ require([
             }
             incomeChart.series[0].setData(incomeArray);
 
+            //update HHSize chart data
             let HHSizeArray = [];
             for(let i in tripsDataset[selectedZone]['HHSize']){
                 HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
             }
             HHChart.series[0].setData(HHSizeArray);
 
+            //update trips by purpose chart data
             let tripsByPurposeArray = [];
             for(let i in tripsDataset[selectedZone]['TourPurp']){
                 tripsByPurposeArray.push({'name':i,'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
             }
-            tripsByPurposeChart.xAxis[0].setCategories(getCatergoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
+            tripsByPurposeChart.xAxis[0].setCategories(getCategoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
+            //update drilldown data of trips by purpose chart
             tripsByPurposeChart.options.drilldown.series = generateDrilldownSeries(tripsDataset[selectedZone]['TourDistByPurp']);
             tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
-            drawDistanceChart();
+            updateBulletChart();
         }
     }
 });
-function drawDistanceChart(){
+/***
+all the bullets chart is able to drill down
+However, I didn't use the highcharts' drill down feature
+I wrote my own drill down method
+ ***/
+function updateBulletChart(){
+    //set highcharts' feature to draw bullet
     Highcharts.setOptions({
         chart: {
             inverted: true,
@@ -399,6 +417,7 @@ function drawDistanceChart(){
             enabled: false
         }
     });
+    //show all four bullet charts
     $('#avgDist').show();
     $('#avgGHG').show();
     $('#totalEmp').show();
@@ -407,10 +426,12 @@ function drawDistanceChart(){
     $('#avgGHG').height('25%');
     $('#totalEmp').height('25%');
     $('#totalPop').height('25%');
+    //calculate total distance
     let totalDist = 0;
     for(let k in tripsDataset[selectedZone]['Dist']){
         totalDist += tripsDataset[selectedZone]['Dist'][k]
     }
+    //calculate total numbers of trips
     let totalAmount = 0;
     for(let k in tripsDataset[selectedZone]['TourPurp']) {
         totalAmount += tripsDataset[selectedZone]['TourPurp'][k]
@@ -455,12 +476,12 @@ function drawDistanceChart(){
             ]
         }],
     });
-
+    //add click event to the label
     distChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
         label.onclick = function() {
-            // distChart.destroy();
+            // show average distance chart and hide all the others
             $('#avgDist').show();
             $('#avgDist').height('100%');
             $('#totalEmp').hide();
@@ -470,6 +491,7 @@ function drawDistanceChart(){
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
                 distByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
             }
+            //update tge avgDist chart to a dist by purpose
             let drillDownDistChart = Highcharts.chart('avgDist', {
                 chart: {
                     type: 'column'
@@ -511,14 +533,15 @@ function drawDistanceChart(){
                     }
                 }]
             });
+            //add click label event to the dist by purpose chart
             drillDownDistChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
                 label.style.cursor = "pointer";
-                label.onclick = function() {drawDistanceChart()}
+                label.onclick = function() {updateBulletChart()}
             })
         }
     });
-
+    //draw average green house gas emission chart
     let ghgChart = Highcharts.chart('avgGHG', {
         chart: {
             marginTop: 20
@@ -550,6 +573,7 @@ function drawDistanceChart(){
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
         },
     });
+    //add drilldown event to the label
     ghgChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
@@ -602,14 +626,15 @@ function drawDistanceChart(){
                     }
                 }]
             });
+            //add back to original event to the chart's label
             drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
                 label.style.cursor = "pointer";
-                label.onclick = function() {drawDistanceChart()}
+                label.onclick = function() {updateBulletChart()}
             })
         }
     });
-
+    //draw total employment bullet chart
     let totalEmp = Highcharts.chart('totalEmp', {
         chart: {
             marginTop: 20
@@ -639,6 +664,7 @@ function drawDistanceChart(){
             pointFormat: '<b>{point.y}</b> (with target at {point.target})'
         }
     });
+    //add drill down event
     totalEmp.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
@@ -691,18 +717,20 @@ function drawDistanceChart(){
                     }
                 }]
             });
+            //add back event
             drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
                 label.style.cursor = "pointer";
-                label.onclick = function() {drawDistanceChart()}
+                label.onclick = function() {updateBulletChart()}
             })
         }
     });
-
+    //calculate population
     let popOfSelectedZone = 0;
     for(let i in populationBreakdown[selectedZone]){
         popOfSelectedZone+=Number(populationBreakdown[selectedZone][i])
     }
+    //draw total population bullet chart
     let totalPop = Highcharts.chart('totalPop', {
         chart: {
             marginTop: 20,
@@ -733,7 +761,7 @@ function drawDistanceChart(){
             pointFormat: '<b>{point.y}</b> (with target at {point.target})'
         }
     });
-
+    //add drill down event
     totalPop.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
@@ -770,8 +798,9 @@ function drawDistanceChart(){
                             },
                         },
                         events: {
+                            //back event
                             click: function (event) {
-                                drawDistanceChart()
+                                updateBulletChart()
                             }
                         }
                     }
@@ -833,7 +862,7 @@ function drawDistanceChart(){
     });
 }
 
-//seperate an object into a list of values and a list of keys
+//seperate a Trip object into a list of values and a list of keys
 function getKeysValuesOfTripsObject(obj){
     let keys = [];
     let values = [];
@@ -843,6 +872,7 @@ function getKeysValuesOfTripsObject(obj){
     }
     return [keys,values];
 }
+//seperate an common object into a list of values and a list of keys
 function getKeysValuesOfObject(obj){
     let keys = [];
     let values = [];
@@ -852,7 +882,8 @@ function getKeysValuesOfObject(obj){
     }
     return [keys,values];
 }
-function convertPopEmpData(popEmpDataset) {
+//convert csv data into desirable json format
+function convertCSVData(popEmpDataset) {
     let TAZTitle = 'TAZ1669';
     let tmpData = {};
     for(let k in popEmpDataset){
@@ -866,6 +897,7 @@ function convertPopEmpData(popEmpDataset) {
     }
     return tmpData
 }
+//generate drilldown series of 'Trips by purpose' chart
 function generateDrilldownSeries(distPurpArray){
     let result = []
     for(let k in distPurpArray){
@@ -883,7 +915,8 @@ function generateDrilldownSeries(distPurpArray){
     return result
 
 }
-function getCatergoriesOfDistByPurp(distPurpArray){
+//get xAxis categories
+function getCategoriesOfDistByPurp(distPurpArray){
     let result = []
     for(let k in distPurpArray){
         for(let distK in distPurpArray[k]){
