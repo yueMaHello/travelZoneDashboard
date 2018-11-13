@@ -10,12 +10,15 @@ require([
     "esri/symbols/SimpleMarkerSymbol", "esri/Color", "dojo/domReady!"
 ], function(Map, domConstruct,FeatureLayer, Popup, Legend,SimpleLineSymbol,InfoTemplate,SimpleFillSymbol,ClassBreaksRenderer,SimpleMarkerSymbol,Color
 ) {
+    //D3 read json and csv files
     d3.queue().defer(d3.json,'./outputData/output.json')
               .defer(d3.csv,'./data/RTM3_Pop_Emp_2015.csv')
               .defer(d3.csv,'./data/Population_2015_RTM3.csv')
               .defer(d3.csv,'./data/DwellingType_2015_RTM3.csv')
               .await(loadData);
+    //after read the data, call loadData.
     function loadData(error,outputData,popEmpData,popBreak,dwellingData){
+        //store data into global variables
         tripsDataset = outputData;
         popEmpDataset = convertCSVData(popEmpData);
         populationBreakdown = convertCSVData(popBreak);
@@ -43,10 +46,10 @@ require([
             map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
             selectedZone = '101';//default zone
-            drawChart(selectedZone);
+            drawChart(selectedZone);//draw all the charts based on the default zone
         });
 
-        //add color to the travel zone layer
+        //render color on the travel zone layer
         let symbol = new SimpleFillSymbol();
         let renderer = new ClassBreaksRenderer(symbol, function(feature){
             return 1;
@@ -61,6 +64,7 @@ require([
             // Draw the chart and set the chart values
             drawChart(selectedZone);
         });
+
         //initialize dwelling chart
         let dwellingChart = Highcharts.chart('dwelling', {
                 chart: {
@@ -103,6 +107,7 @@ require([
                     enabled: false
                 }
         });
+
         //initialize autoOwnership chart
         let autoOwnershipChart=Highcharts.chart('autoOwnership', {
             chart: {
@@ -154,6 +159,7 @@ require([
             //     enabled: false
             // }
         });
+
         //initialize mode chart
         let modeChart = Highcharts.chart('mode', {
             chart: {
@@ -180,6 +186,7 @@ require([
                 enabled: false
             }
         });
+
         //initialize income chart
         let incomeChart = Highcharts.chart('income', {
             chart: {
@@ -225,6 +232,7 @@ require([
                 enabled: false
             }
         });
+
         //initialize Household chart
         let HHChart = Highcharts.chart('HHSize', {
             chart: {
@@ -261,12 +269,12 @@ require([
                 enabled: false
             }
         });
-
         Highcharts.setOptions({
             lang: {
                 drillUpText: 'Back'
             }
         });
+        //initialize Trips By Purpose chart
         let tripsByPurposeChart = Highcharts.chart('tripsByPurpose', {
             chart: {
                 plotBackgroundColor: null,
@@ -277,8 +285,6 @@ require([
 
             title: {
                 text: 'Trips By Purpose',
-                // align: 'center',
-                // verticalAlign: 'middle',
                 y: 40
             },
             plotOptions: {
@@ -311,7 +317,8 @@ require([
             },
 
         });
-        //update chartds based on selected zone
+
+        //update charts based on current selected zone
         function drawChart(selectedZone){
             //automatically click drilldown back button
             $('.highcharts-drillup-button').click();
@@ -384,11 +391,11 @@ require([
 });
 /***
 all the bullets chart is able to drill down
-However, I didn't use the highcharts' drill down feature
+However, I didn't use the highchart's drill down function, since it is not very suitable to this case.
 I wrote my own drill down method
  ***/
 function updateBulletChart(){
-    //set highcharts' feature to draw bullet
+    //set highcharts' feature to draw bullet chart
     Highcharts.setOptions({
         chart: {
             inverted: true,
@@ -436,7 +443,7 @@ function updateBulletChart(){
     for(let k in tripsDataset[selectedZone]['TourPurp']) {
         totalAmount += tripsDataset[selectedZone]['TourPurp'][k]
     }
-
+    //draw Average Travel Distance bullet chart
     let distChart = Highcharts.chart('avgDist', {
         chart: {
             marginTop: 20
@@ -466,20 +473,19 @@ function updateBulletChart(){
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
         },
-
         series: [{
             name:'Distance',
             data: [{
                 y: totalDist/totalAmount,
                 target: 30,
-            }
-            ]
+            }]
         }],
     });
     //add click event to the label
     distChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
+        //when the user clicks on the distChart's labels, the following function will be called.
         label.onclick = function() {
             // show average distance chart and hide all the others
             $('#avgDist').show();
@@ -491,7 +497,7 @@ function updateBulletChart(){
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
                 distByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
             }
-            //update tge avgDist chart to a dist by purpose
+            //update the avgDist chart to a dist by purpose
             let drillDownDistChart = Highcharts.chart('avgDist', {
                 chart: {
                     type: 'column'
@@ -534,6 +540,8 @@ function updateBulletChart(){
                 }]
             });
             //add click label event to the dist by purpose chart
+            //if the user clicks on this drillDownDistChart's labels, the updateBulletChart function will be called again.
+            //it is a self-perpetuate feature
             drillDownDistChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
             {
                 label.style.cursor = "pointer";
@@ -805,6 +813,7 @@ function updateBulletChart(){
                         }
                     }
                 },
+                //Hard coding part. If your data structure change, you will have to change this part of code
                 series: [{
                     innerSize: '20%',
                     data: [{
