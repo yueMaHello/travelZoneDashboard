@@ -319,6 +319,7 @@ require([
         });
 
         //update charts based on current selected zone
+        //This function will be called whenever the user changes his selection.
         function drawChart(selectedZone){
             //automatically click drilldown back button
             $('.highcharts-drillup-button').click();
@@ -339,7 +340,7 @@ require([
 
             }
             for(let i in tripsDataset[selectedZone]['Own']){
-                //5+ condition
+                //combine the value of 5+ condition
                 if(i>=5){
                     largerThanFive+=tripsDataset[selectedZone]['Own'][i];
                 }
@@ -392,8 +393,9 @@ require([
 /***
 all the bullets chart is able to drill down
 However, I didn't use the highchart's drill down function, since it is not very suitable to this case.
-I wrote my own drill down method
- ***/
+I put four bullets chart into a single DIV, and I need each bullet chart being able to change itself to show a detailed bar/pie chart.
+I wrote my own drill down method.
+***/
 function updateBulletChart(){
     //set highcharts' feature to draw bullet chart
     Highcharts.setOptions({
@@ -581,12 +583,11 @@ function updateBulletChart(){
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
         },
     });
-    //add drilldown event to the label
+    //add drilldown event to the label of the chart
     ghgChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
         label.onclick = function() {
-
             $('#avgGHG').show();
             $('#avgGHG').height('100%');
             $('#avgDist').hide();
