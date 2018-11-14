@@ -280,6 +280,14 @@ require([
                 plotBackgroundColor: null,
                 plotBorderWidth: 0,
                 plotShadow: false,
+                events: {
+                    drilldown: function(e) {
+                        tripsByPurposeChart.setTitle({ text: "Trips By " + e.point.name });
+                    },
+                    drillup: function(e) {
+                        tripsByPurposeChart.setTitle({ text: "Trips By Purpose" });
+                    }
+                }
 
             },
 
@@ -337,7 +345,6 @@ require([
             let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
-
             }
             for(let i in tripsDataset[selectedZone]['Own']){
                 //combine the value of 5+ condition

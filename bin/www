@@ -62,8 +62,7 @@ rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
             server.on('listening', onListening);
         });
     }
-    else{
-
+    else{//the user hasn't updated the trips_1.csv dataset
         server.listen(port);
         server.on('error', onError);
         server.on('listening', onListening);
@@ -100,11 +99,9 @@ function initializeData(line){
 }
 //convert this line's record and store into json format
 function callback(line){
-
     if(!Number(line[0])){
         return
     }
-    // console.log(line)
     data[line[6]]['Person#'][line[18]] += parseFloat(line[3]);
     data[line[6]]['Mode'][line[14]] += 1;
     data[line[6]]['TourPurp'][line[18]] += 1;
@@ -183,14 +180,10 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
-}
-function readDataLineByLine(){
-
 }

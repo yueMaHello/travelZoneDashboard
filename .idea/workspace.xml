@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="899e5cbc-189c-49bf-ba87-5736ec67466a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/main.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -44,6 +45,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="www" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/www">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2266">
+              <caret line="103" selection-start-line="103" selection-end-line="103" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="output.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/outputData/output.json">
           <provider selected="true" editor-type-id="text-editor">
@@ -65,8 +75,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
-              <caret line="497" column="35" lean-forward="true" selection-start-line="497" selection-start-column="35" selection-end-line="497" selection-end-column="35" />
+            <state relative-caret-position="506">
+              <caret line="287" column="43" selection-start-line="287" selection-start-column="43" selection-end-line="287" selection-end-column="43" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
@@ -87,7 +97,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>30</find>
       <find>101</find>
       <find>marginTop</find>
       <find>console</find>
@@ -110,13 +119,14 @@
       <find>draw</find>
       <find>too</find>
       <find>drilldo</find>
-      <find>drilldown</find>
       <find>tripsByPurposeChart</find>
       <find>data</find>
       <find>trips</find>
       <find>setca</find>
       <find>line</find>
       <find>var</find>
+      <find>ratio</find>
+      <find>drilldown</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -280,12 +290,12 @@
       <workItem from="1540414453984" duration="33803000" />
       <workItem from="1540574679754" duration="109314000" />
       <workItem from="1541518862886" duration="1486000" />
-      <workItem from="1541528609892" duration="17487000" />
+      <workItem from="1541528609892" duration="23691000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="194716000" />
+    <option name="totallyTimeSpent" value="200920000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-18" y="7" width="1946" height="1047" extended-state="0" />
@@ -529,27 +539,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/data/RTM3_Pop_Emp_2015.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/www">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1461">
-          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/outputData/output.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret column="2074" selection-start-column="2060" selection-end-column="2074" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-565">
@@ -571,10 +560,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/outputData/output.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret column="2074" selection-start-column="2060" selection-end-column="2074" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/www">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2266">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/data/RTM3_Pop_Emp_2015.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="497" column="35" lean-forward="true" selection-start-line="497" selection-start-column="35" selection-end-line="497" selection-end-column="35" />
+        <state relative-caret-position="506">
+          <caret line="287" column="43" selection-start-line="287" selection-start-column="43" selection-end-line="287" selection-end-column="43" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
