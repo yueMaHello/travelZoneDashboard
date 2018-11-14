@@ -15,6 +15,7 @@ This is a Nodejs web application using Arcgis Javascript API. It displays a dyna
 1. Everything has already been set up on this computer.
 2. Open the terminal/cmd and go to the root of the App './travelzoneDashboard'. 
 3. Put your csv data into './public/data' folder. The input files are 'DwellingType_2015_RTM3.csv', 'Population_2015_RTM3.csv', and 'trips_1.csv'. 
+4. If you want to change the data sources, you should follow the names of the files and keep the headers of each file.
 ## Run
 1. Use terminal/cmd to go to the root of the App './travelzoneDashboard'. 
 2. Type 'npm start'
