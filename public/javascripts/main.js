@@ -1,8 +1,26 @@
+/***
+ * main.js is used to plot and control the charts and map.
+ * When the user clicks on a travel zone, the charts will change correspondingly.
+ * The webpage layout is coded in './views/index.html' and './public/stylesheets/style.css'.
+ * If you want to change the position of the charts, it is quite simple and I will explain it in 'index.html'
+ */
 let tripsDataset; //store ./outputData/output.json
 let popEmpDataset;//store ./data/RTM3_Pop_Emp_2015.csv
 let populationBreakdown;//store ./data/Population_2015_RTM3.csv
 let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
 let selectedZone;//store the zone being selected
+let purposeDict = {
+    'P':'Personal Business',
+    'C':'Escort',
+    'W':'Work',
+    'L':'Social',
+    'H':'Shop',
+    'R':'Recreation',
+    'Q':'Quick Stop',
+    'S':'School'
+
+
+}
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
@@ -45,7 +63,7 @@ require([
         map.on('load',function(){
             map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
-            selectedZone = '101';//default zone
+            selectedZone = '101';//set a default zone so that the charts are not blank at initial
             drawChart(selectedZone);//draw all the charts based on the default zone
         });
 
@@ -154,10 +172,7 @@ require([
                 type: 'column',
                 data:  '',
                 showInLegend: false
-            }],
-            // exporting: {
-            //     enabled: false
-            // }
+            }]
         });
 
         //initialize mode chart
@@ -282,13 +297,12 @@ require([
                 plotShadow: false,
                 events: {
                     drilldown: function(e) {
-                        tripsByPurposeChart.setTitle({ text: "Trips By " + e.point.name });
+                        tripsByPurposeChart.setTitle({ text: e.point.name });
                     },
                     drillup: function(e) {
                         tripsByPurposeChart.setTitle({ text: "Trips By Purpose" });
                     }
                 }
-
             },
 
             title: {
@@ -297,18 +311,21 @@ require([
             },
             plotOptions: {
                 pie: {
+
+
                     dataLabels: {
                         enabled: true,
                         distance: -50,
                         style: {
                             fontWeight: 'bold',
-                            color: 'white'
+                            color: 'white',
+                            textOverflow: 'clip'
                         }
                     },
                     startAngle: -90,
                     endAngle: 90,
                     center: ['50%', '75%'],
-                    size: '110%'
+                    size: '110%',
                 }
             },
             series: [{
@@ -355,7 +372,7 @@ require([
                     autoArray.push([i,tripsDataset[selectedZone]['Own'][i]]);
                 }
             }
-            autoArray.push(['5+',largerThanFive]);
+            autoArray.push(['5+',largerThanFive]);//add 5+ data to the autoArray
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
 
@@ -387,7 +404,7 @@ require([
             //update trips by purpose chart data
             let tripsByPurposeArray = [];
             for(let i in tripsDataset[selectedZone]['TourPurp']){
-                tripsByPurposeArray.push({'name':i,'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
+                tripsByPurposeArray.push({'name':purposeDict[i],'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
             }
             tripsByPurposeChart.xAxis[0].setCategories(getCategoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
             //update drilldown data of trips by purpose chart
@@ -504,7 +521,7 @@ function updateBulletChart(){
             $('#totalPop').hide();
             let distByPurpose = [];
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
-                distByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
+                distByPurpose.push([purposeDict[purp],tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
             }
             //update the avgDist chart to a dist by purpose
             let drillDownDistChart = Highcharts.chart('avgDist', {
@@ -517,10 +534,12 @@ function updateBulletChart(){
                 xAxis: {
                     type: 'category',
                     labels: {
-                        rotation: -45,
+                        rotation: -0,
                         style: {
                             fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
+                            fontFamily: 'Verdana, sans-serif',
+                            textOverflow: 'clip'
+
                         }
                     }
                 },
@@ -543,6 +562,8 @@ function updateBulletChart(){
                         y: 0, // 10 pixels down from the top
                         style: {
                             fontSize: '8px',
+                            textOverflow: 'clip'
+
 
                         }
                     }
@@ -602,7 +623,7 @@ function updateBulletChart(){
             $('#totalPop').hide();
             let ghgByPurpose = [];
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
-                ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
+                ghgByPurpose.push([purposeDict[purp],tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
             let drillDownGHGChart = Highcharts.chart('avgGHG', {
                 chart: {
@@ -614,10 +635,11 @@ function updateBulletChart(){
                 xAxis: {
                     type: 'category',
                     labels: {
-                        rotation: -45,
+                        rotation: -0,
                         style: {
                             fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
+                            fontFamily: 'Verdana, sans-serif',
+                            textOverflow: 'clip'
                         }
                     }
                 },
@@ -638,6 +660,8 @@ function updateBulletChart(){
                         y: 0, // 10 pixels down from the top
                         style: {
                             fontSize: '8px',
+                            textOverflow: 'clip'
+
                         }
                     }
                 }]
@@ -692,7 +716,7 @@ function updateBulletChart(){
             $('#totalPop').hide();
             let ghgByPurpose = [];
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
-                ghgByPurpose.push([purp,tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
+                ghgByPurpose.push([purposeDict[purp],tripsDataset[selectedZone]['Dist'][purp]*0.327/tripsDataset[selectedZone]['Person#'][purp]])
             }
             let drillDownGHGChart = Highcharts.chart('totalEmp', {
                 chart: {
@@ -704,10 +728,12 @@ function updateBulletChart(){
                 xAxis: {
                     type: 'category',
                     labels: {
-                        rotation: -45,
+                        rotation: -0,
                         style: {
                             fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
+                            fontFamily: 'Verdana, sans-serif',
+                            textOverflow: 'clip'
+
                         }
                     }
                 },
@@ -729,6 +755,8 @@ function updateBulletChart(){
                         y: 0, // 10 pixels down from the top
                         style: {
                             fontSize: '8px',
+                            textOverflow: 'clip'
+
                         }
                     }
                 }]
@@ -812,6 +840,8 @@ function updateBulletChart(){
                             style: {
                                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                             },
+                            textOverflow: 'clip'
+
                         },
                         events: {
                             //back event
