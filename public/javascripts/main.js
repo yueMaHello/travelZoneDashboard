@@ -18,9 +18,7 @@ let purposeDict = {
     'R':'Recreation',
     'Q':'Quick Stop',
     'S':'School'
-
-
-}
+};
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
@@ -254,29 +252,30 @@ require([
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
-                type: 'pie'
+                type: 'bar'
             },
             title: {
                 text: 'Household Size'
             },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        }
-                    }
-                }
-            },
+            xAxis:{categories:[]},
+            // tooltip: {
+            //     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            // },
+            // plotOptions: {
+            //     bar: {
+            //         allowPointSelect: true,
+            //         cursor: 'pointer',
+            //         dataLabels: {
+            //             enabled: true,
+            //             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            //             style: {
+            //                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+            //             }
+            //         }
+            //     }
+            // },
             series: [{
-                name: 'Percentage',
+                name: 'Amount',
                 colorByPoint: true,
                 data:[]
             }],
@@ -311,11 +310,8 @@ require([
             },
             plotOptions: {
                 pie: {
-
-
                     dataLabels: {
                         enabled: true,
-                        distance: -50,
                         style: {
                             fontWeight: 'bold',
                             color: 'white',
@@ -325,13 +321,12 @@ require([
                     startAngle: -90,
                     endAngle: 90,
                     center: ['50%', '75%'],
-                    size: '110%',
+                    size: '70%',
                 }
             },
             series: [{
                 type: 'pie',
                 name: 'Trips Amount',
-                innerSize: '50%',
                 data: []
             }],
             credits: {
@@ -400,7 +395,7 @@ require([
                 HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
             }
             HHChart.series[0].setData(HHSizeArray);
-
+            HHChart.xAxis[0].setCategories(getKeysValuesOfObject(tripsDataset[selectedZone]['HHSize'])[0])
             //update trips by purpose chart data
             let tripsByPurposeArray = [];
             for(let i in tripsDataset[selectedZone]['TourPurp']){
@@ -964,7 +959,7 @@ function generateDrilldownSeries(distPurpArray){
 }
 //get xAxis categories
 function getCategoriesOfDistByPurp(distPurpArray){
-    let result = []
+    let result = [];
     for(let k in distPurpArray){
         for(let distK in distPurpArray[k]){
             result.push(distK+'km')

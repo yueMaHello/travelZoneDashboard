@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="899e5cbc-189c-49bf-ba87-5736ec67466a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -75,8 +73,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="730" column="36" selection-start-line="730" selection-start-column="34" selection-end-line="730" selection-end-column="36" />
+            <state relative-caret-position="222">
+              <caret line="264" column="25" lean-forward="true" selection-start-line="264" selection-start-column="25" selection-end-line="264" selection-end-column="25" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
@@ -106,15 +104,13 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>exporting</find>
-      <find>km</find>
       <find>kg</find>
-      <find>total empl</find>
+      <find />
       <find>dialog</find>
-      <find>auto ownership</find>
+      <find />
       <find>buildMatrixLookup</find>
       <find>tripsDataset</find>
-      <find>number of</find>
+      <find />
       <find>draw</find>
       <find>too</find>
       <find>drilldo</find>
@@ -132,10 +128,12 @@
       <find>pie</find>
       <find>dwelling</find>
       <find>purpose</find>
-      <find>trips by</find>
-      <find>Trips by</find>
+      <find />
+      <find />
       <find>-20</find>
       <find>-0</find>
+      <find>house</find>
+      <find>HHChart</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -298,12 +296,12 @@
       <workItem from="1540414453984" duration="33803000" />
       <workItem from="1540574679754" duration="109314000" />
       <workItem from="1541518862886" duration="1486000" />
-      <workItem from="1541528609892" duration="35489000" />
+      <workItem from="1541528609892" duration="39575000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="212718000" />
+    <option name="totallyTimeSpent" value="216804000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -591,8 +589,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="730" column="36" selection-start-line="730" selection-start-column="34" selection-end-line="730" selection-end-column="36" />
+        <state relative-caret-position="222">
+          <caret line="264" column="25" lean-forward="true" selection-start-line="264" selection-start-column="25" selection-end-line="264" selection-end-column="25" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
