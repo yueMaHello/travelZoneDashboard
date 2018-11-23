@@ -9,6 +9,7 @@ let popEmpDataset;//store ./data/RTM3_Pop_Emp_2015.csv
 let populationBreakdown;//store ./data/Population_2015_RTM3.csv
 let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
 let selectedZone;//store the zone being selected
+let professionalTravelModeChart = false;
 let purposeDict = {
     'P':'Personal Business',
     'C':'Escort',
@@ -337,6 +338,20 @@ require([
             },
 
         });
+        $('.highcharts-title').on('click',function(e){
+            console.log(e)
+            let chartTitle = e.currentTarget.textContent;
+            if(chartTitle === modeChart.title.textStr){
+                if(professionalTravelModeChart===false){
+                    professionalTravelModeChart=true;
+                    updateTravelModeChart(selectedZone)
+                }
+                else{
+                    professionalTravelModeChart=false;
+                    updateTravelModeChart(selectedZone)
+                }
+            }
+        });
 
         //update charts based on current selected zone
         //This function will be called whenever the user changes his selection.
@@ -370,14 +385,7 @@ require([
             autoArray.push(['5+',largerThanFive]);//add 5+ data to the autoArray
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
-
-            //update mode chart data
-            let modeArray= [];
-            for(let i in tripsDataset[selectedZone]['Mode']){
-                modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);}
-            modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
-            modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
-
+            updateTravelModeChart(selectedZone);
             //update income chart data
             let incomeSum=0;
             for (let i in tripsDataset[selectedZone]['IncGrp']){
@@ -407,8 +415,73 @@ require([
             tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
             updateBulletChart();
         }
+        function updateTravelModeChart(selectedZone){
+            if(professionalTravelModeChart === false){
+                let modeArray= [];
+                for(let i in tripsDataset[selectedZone]['Mode']){
+                    modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);}
+                modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
+                modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
+
+            }
+
+            else{
+                /**Start of Special Mode Chart*/
+                let selfDefinedMode = {'Bike':0,'Driver':0,'Transit':0,'School Bus':0,'Passenger':0,'Walk':0};
+                for(let i in tripsDataset[selectedZone]['Mode']){
+
+                    if(i==='Bike'){
+                        selfDefinedMode['Bike']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+                    else if(i==='SOV'){
+                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+                    else if(i==='WAT'){
+                        selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+                    else if(i==='PNR'){
+                        selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+                    else if(i==='SB'){
+                        selfDefinedMode['School Bus']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+
+                    else if(i==='HOV2'){
+                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/2
+                        selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]/2
+
+                    }
+                    else if(i==='HOV3'){
+                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/3.2
+                        selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]*2.2/3.2
+
+                    }
+                    else if(i==='Walk'){
+                        selfDefinedMode['Walk']+=tripsDataset[selectedZone]['Mode'][i]
+
+                    }
+                    else if(i==='KNR'){
+                        selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
+                    }
+
+                }
+                let modeArray= [];
+                for(let i in selfDefinedMode){
+                    modeArray.push([i,selfDefinedMode[i]]);}
+                modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
+                modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
+                /**End of Special Mode Chart*/
+            }
+
+        }
     }
 });
+
 /***
 all the bullets chart is able to drill down
 However, I didn't use the highchart's drill down function, since it is not very suitable to this case.

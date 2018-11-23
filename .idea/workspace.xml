@@ -28,8 +28,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-line="79" />
+            <state relative-caret-position="462">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -73,8 +73,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="264" column="25" lean-forward="true" selection-start-line="264" selection-start-column="25" selection-end-line="264" selection-end-column="25" />
+            <state relative-caret-position="352">
+              <caret line="381" column="55" selection-start-line="381" selection-start-column="55" selection-end-line="381" selection-end-column="55" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
@@ -104,13 +104,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>kg</find>
-      <find />
-      <find>dialog</find>
-      <find />
+      <find>auto ownership</find>
       <find>buildMatrixLookup</find>
       <find>tripsDataset</find>
-      <find />
+      <find>number of</find>
       <find>draw</find>
       <find>too</find>
       <find>drilldo</find>
@@ -128,12 +125,15 @@
       <find>pie</find>
       <find>dwelling</find>
       <find>purpose</find>
-      <find />
-      <find />
+      <find>trips by</find>
+      <find>Trips by</find>
       <find>-20</find>
       <find>-0</find>
       <find>house</find>
       <find>HHChart</find>
+      <find>click</find>
+      <find>drawChart</find>
+      <find>updateTravelModeChart</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -296,12 +296,12 @@
       <workItem from="1540414453984" duration="33803000" />
       <workItem from="1540574679754" duration="109314000" />
       <workItem from="1541518862886" duration="1486000" />
-      <workItem from="1541528609892" duration="39575000" />
+      <workItem from="1541528609892" duration="43717000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="216804000" />
+    <option name="totallyTimeSpent" value="220946000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -559,13 +559,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="79" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/outputData/output.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -587,10 +580,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="264" column="25" lean-forward="true" selection-start-line="264" selection-start-column="25" selection-end-line="264" selection-end-column="25" />
+        <state relative-caret-position="352">
+          <caret line="381" column="55" selection-start-line="381" selection-start-column="55" selection-end-line="381" selection-end-column="55" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
