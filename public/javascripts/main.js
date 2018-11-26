@@ -10,6 +10,7 @@ let populationBreakdown;//store ./data/Population_2015_RTM3.csv
 let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
 let selectedZone;//store the zone being selected
 let professionalTravelModeChart = false;
+let selectedDistrictLayer;
 let purposeDict = {
     'P':'Personal Business',
     'C':'Escort',
@@ -20,12 +21,17 @@ let purposeDict = {
     'Q':'Quick Stop',
     'S':'School'
 };
+let incomeDict = {
+    'Lo':'Low',
+    'Med':'Medium',
+    'Hi':'High'
+};
 require([
     "esri/map","dojo/dom-construct", "esri/layers/FeatureLayer",
     "esri/dijit/Popup", "esri/dijit/Legend","esri/symbols/SimpleLineSymbol",
     "esri/InfoTemplate", "esri/symbols/SimpleFillSymbol", "esri/renderers/ClassBreaksRenderer",
-    "esri/symbols/SimpleMarkerSymbol", "esri/Color", "dojo/domReady!"
-], function(Map, domConstruct,FeatureLayer, Popup, Legend,SimpleLineSymbol,InfoTemplate,SimpleFillSymbol,ClassBreaksRenderer,SimpleMarkerSymbol,Color
+    "esri/symbols/SimpleMarkerSymbol","esri/layers/GraphicsLayer","esri/graphic", "esri/Color", "dojo/domReady!"
+], function(Map, domConstruct,FeatureLayer, Popup, Legend,SimpleLineSymbol,InfoTemplate,SimpleFillSymbol,ClassBreaksRenderer,SimpleMarkerSymbol,GraphicsLayer,Graphic,Color
 ) {
     //D3 read json and csv files
     d3.queue().defer(d3.json,'./outputData/output.json')
@@ -58,10 +64,16 @@ require([
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
         });
+        let hydroLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/edmontonHydro/FeatureServer/0",{
+            mode: FeatureLayer.MODE_SNAPSHOT,
+            outFields: ["*"],
+        });
+
         //when map is loading
         map.on('load',function(){
             map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
+            map.addLayer(hydroLayer);
             selectedZone = '101';//set a default zone so that the charts are not blank at initial
             drawChart(selectedZone);//draw all the charts based on the default zone
         });
@@ -71,7 +83,7 @@ require([
         let renderer = new ClassBreaksRenderer(symbol, function(feature){
             return 1;
         });
-        renderer.addBreak(0, 10, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([65,105,225,0.9]),1)).setColor(new Color([255, 255, 255,0.2])));
+        renderer.addBreak(0, 10, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([65,105,225,0.5]),1)).setColor(new Color([255, 255, 255,0.5])));
         travelZoneLayer.setRenderer(renderer);
         travelZoneLayer.redraw();
 
@@ -80,6 +92,22 @@ require([
             selectedZone = e.graphic.attributes["TAZ_New"];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
+
+            if(selectedDistrictLayer){
+                map.removeLayer(selectedDistrictLayer);
+            }
+            selectedDistrictLayer = new GraphicsLayer({ id: "selectedDistrictLayer" });
+            let highlightSymbol = new SimpleFillSymbol(
+                SimpleFillSymbol.STYLE_SOLID,
+                new SimpleLineSymbol(
+                    SimpleLineSymbol.STYLE_SOLID,
+                    new Color([255,0,0,0.5]), 2
+                ),
+                new Color([255,0,0,0.5])
+            );
+            let graphic = new Graphic(e.graphic.geometry, highlightSymbol);
+            selectedDistrictLayer.add(graphic);
+            map.addLayer(selectedDistrictLayer);
         });
 
         //initialize dwelling chart
@@ -116,7 +144,7 @@ require([
                     layout: 'vertical'
                 },
                 series: [{
-                    name: 'Number of Households',
+                    name: 'Number of Dwelling Units',
                     data: [],
                     pointPlacement: 'on'
                 }],
@@ -136,7 +164,7 @@ require([
             xAxis: {
                 categories: '',
                 title: {
-                    text: null
+                    text: "Number of Cars Per Household"
                 }
             },
             yAxis: {
@@ -258,25 +286,21 @@ require([
             title: {
                 text: 'Household Size'
             },
-            xAxis:{categories:[]},
-            // tooltip: {
-            //     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            // },
-            // plotOptions: {
-            //     bar: {
-            //         allowPointSelect: true,
-            //         cursor: 'pointer',
-            //         dataLabels: {
-            //             enabled: true,
-            //             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            //             style: {
-            //                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-            //             }
-            //         }
-            //     }
-            // },
+            tooltip: {
+                formatter: function () {
+                    return '';
+                }
+            },
+            yAxis: {
+                title: {
+                    text:'Amount'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+  
             series: [{
-                name: 'Amount',
                 colorByPoint: true,
                 data:[]
             }],
@@ -322,7 +346,7 @@ require([
                     startAngle: -90,
                     endAngle: 90,
                     center: ['50%', '75%'],
-                    size: '70%',
+                    size: '60%',
                 }
             },
             series: [{
@@ -339,7 +363,7 @@ require([
 
         });
         $('.highcharts-title').on('click',function(e){
-            console.log(e)
+
             let chartTitle = e.currentTarget.textContent;
             if(chartTitle === modeChart.title.textStr){
                 if(professionalTravelModeChart===false){
@@ -393,17 +417,26 @@ require([
             }
             let incomeArray = [];
             for(let i in tripsDataset[selectedZone]['IncGrp']){
-                incomeArray.push([i,tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
+                incomeArray.push([incomeDict[i],tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
             }
             incomeChart.series[0].setData(incomeArray);
 
             //update HHSize chart data
             let HHSizeArray = [];
+            let HHlargerThanFive = 0
             for(let i in tripsDataset[selectedZone]['HHSize']){
-                HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
+                //combine the value of 5+ condition
+                if(Number(i)>=5){
+                    HHlargerThanFive+=tripsDataset[selectedZone]['HHSize'][i];
+                }
+                else{
+                    HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
+                }
             }
+            HHSizeArray.push(['5+',HHlargerThanFive]);//add 5+ data to the autoArray
+            console.log(HHSizeArray)
             HHChart.series[0].setData(HHSizeArray);
-            HHChart.xAxis[0].setCategories(getKeysValuesOfObject(tripsDataset[selectedZone]['HHSize'])[0])
+            HHChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(HHSizeArray)[0])
             //update trips by purpose chart data
             let tripsByPurposeArray = [];
             for(let i in tripsDataset[selectedZone]['TourPurp']){
