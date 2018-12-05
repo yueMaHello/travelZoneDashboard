@@ -848,7 +848,7 @@ function updateBulletChart(){
                     type: 'column'
                 },
                 title: {
-                    text: 'I donnot know what to draw'
+                    text: 'I do not know what to draw'
                 },
                 xAxis: {
                     type: 'category',
@@ -1086,7 +1086,7 @@ function generateDrilldownSeries(distPurpArray){
         result.push({
             id:k,
             type:'line',
-            name: 'Trips Amount',
+            name: 'Amount of Trips',
             data:distArray
         })
     }
