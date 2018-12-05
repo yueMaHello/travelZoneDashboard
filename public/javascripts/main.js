@@ -5,12 +5,13 @@
  * If you want to change the position of the charts, it is quite simple and I will explain it in 'index.html'
  */
 let tripsDataset; //store ./outputData/output.json
-let popEmpDataset;//store ./data/RTM3_Pop_Emp_2015.csv
+let popEmpDataset;//store ./data/RTM3_Emp_2015.csv
 let populationBreakdown;//store ./data/Population_2015_RTM3.csv
 let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
-let selectedZone;//store the zone being selected
+let selectedZone = '101';//store the zone being selected, default zone is '101'
 let professionalTravelModeChart = false;
 let selectedDistrictLayer;
+//If trips_1.csv uses other categories (not 'P','C','W'....'S'), the dictionary should be edited correspondingly
 let purposeDict = {
     'P':'Personal Business',
     'C':'Escort',
@@ -21,6 +22,7 @@ let purposeDict = {
     'Q':'Quick Stop',
     'S':'School'
 };
+//If trips_1.csv uses other categories (not 'Lo','Med','Hi'), the dictionary should be edited correspondingly
 let incomeDict = {
     'Lo':'Low',
     'Med':'Medium',
@@ -35,7 +37,7 @@ require([
 ) {
     //D3 read json and csv files
     d3.queue().defer(d3.json,'./outputData/output.json')
-              .defer(d3.csv,'./data/RTM3_Pop_Emp_2015.csv')
+              .defer(d3.csv,'./data/RTM3_Emp_2015.csv')
               .defer(d3.csv,'./data/Population_2015_RTM3.csv')
               .defer(d3.csv,'./data/DwellingType_2015_RTM3.csv')
               .await(loadData);
@@ -57,7 +59,7 @@ require([
         let travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
-            infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
+            // infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
         });
         //LRT layer
         let lrtFeatureLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/LRT/FeatureServer/0",{
@@ -68,13 +70,11 @@ require([
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
         });
-
         //when map is loading
         map.on('load',function(){
             map.addLayer(travelZoneLayer);
             map.addLayer(lrtFeatureLayer);
             map.addLayer(hydroLayer);
-            selectedZone = '101';//set a default zone so that the charts are not blank at initial
             drawChart(selectedZone);//draw all the charts based on the default zone
         });
 
@@ -92,7 +92,6 @@ require([
             selectedZone = e.graphic.attributes["TAZ_New"];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
-
             if(selectedDistrictLayer){
                 map.removeLayer(selectedDistrictLayer);
             }
@@ -118,7 +117,7 @@ require([
                 },
                 title: {
                     text: 'Dwelling Type',
-                    x: -80
+
                 },
                 pane: {
                     size: '80%'
@@ -127,34 +126,42 @@ require([
                     min: 0,
                     categories: [],
                     tickmarkPlacement: 'on',
-                    lineWidth: 0
+                    lineWidth: 0,
+                    // title: {
+                    //     text: 'Number of Dwelling Units',
+                    //     y:180
+                    // },
                 },
                 yAxis: {
                     gridLineInterpolation: 'polygon',
                     lineWidth: 0,
-                    min: 0
+                    min: 0,
+
                 },
                 tooltip: {
                     shared: true,
                 },
-                legend: {
-                    align: 'bottom',
-                    verticalAlign: 'top',
-                    y: 70,
-                    layout: 'vertical'
-                },
+
                 series: [{
-                    name: 'Number of Dwelling Units',
+                    name: "Number of Dwelling Units",
                     data: [],
-                    pointPlacement: 'on'
+                    pointPlacement: 'on',
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y}', // one decimal
+                        y: 0, // 10 pixels down from the top
+                        style: {
+                            fontSize: '8px',
+                            textOverflow: 'clip'
+                        }
+                    }
                 }],
                 credits: {
                     enabled: false
                 }
         });
-
         //initialize autoOwnership chart
-        let autoOwnershipChart=Highcharts.chart('autoOwnership', {
+        let autoOwnershipChart = Highcharts.chart('autoOwnership', {
             chart: {
                 type: 'column'
             },
@@ -171,7 +178,6 @@ require([
                 min: 0,
                 title: {
                     text: 'Amount',
-                    align: 'high'
                 },
                 labels: {
                     overflow: 'justify'
@@ -209,7 +215,7 @@ require([
                 polar: true
             },
             title: {
-                text: 'Travel Mode'
+                text: 'Travel Mode',
             },
             xAxis: {
                 categories: []
@@ -219,7 +225,16 @@ require([
                 type: 'column',
                 colorByPoint: true,
                 data: [],
-                showInLegend: false
+                showInLegend: false,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}', // one decimal
+                    y: 0, // 10 pixels down from the top
+                    style: {
+                        fontSize: '8px',
+                        textOverflow: 'clip'
+                    }
+                }
             }],
             legend: {
                 enabled: true
@@ -243,7 +258,6 @@ require([
             legend: {
                 enabled: false
             },
-
             plotOptions: {
                 column: {
                     pointPadding: 0.2,
@@ -257,12 +271,10 @@ require([
                     }
                 }
             },
-
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0.2f}%</b> of total<br/>'
             },
-
             series: [
                 {
                     type: 'column',
@@ -287,9 +299,8 @@ require([
                 text: 'Household Size'
             },
             tooltip: {
-                formatter: function () {
-                    return '';
-                }
+                headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">Amount</span>: <b>{point.y}</b><br/>'
             },
             yAxis: {
                 title: {
@@ -299,7 +310,6 @@ require([
             legend: {
                 enabled: false
             },
-  
             series: [{
                 colorByPoint: true,
                 data:[]
@@ -326,13 +336,14 @@ require([
                     drillup: function(e) {
                         tripsByPurposeChart.setTitle({ text: "Trips By Purpose" });
                     }
-                }
-            },
+                },
 
+            },
             title: {
                 text: 'Trips By Purpose',
                 y: 40
             },
+
             plotOptions: {
                 pie: {
                     dataLabels: {
@@ -352,7 +363,8 @@ require([
             series: [{
                 type: 'pie',
                 name: 'Trips Amount',
-                data: []
+                data: [],
+
             }],
             credits: {
                 enabled: false
@@ -362,19 +374,18 @@ require([
             },
 
         });
-        $('.highcharts-title').on('click',function(e){
+        $('#changeMode').on('click',function(e){
 
-            let chartTitle = e.currentTarget.textContent;
-            if(chartTitle === modeChart.title.textStr){
-                if(professionalTravelModeChart===false){
-                    professionalTravelModeChart=true;
-                    updateTravelModeChart(selectedZone)
-                }
-                else{
-                    professionalTravelModeChart=false;
-                    updateTravelModeChart(selectedZone)
-                }
+            if(professionalTravelModeChart===false){
+                professionalTravelModeChart=true;
+                updateTravelModeChart(selectedZone);
             }
+            else{
+                professionalTravelModeChart=false;
+                updateTravelModeChart(selectedZone);
+            }
+
+
         });
 
         //update charts based on current selected zone
@@ -423,7 +434,7 @@ require([
 
             //update HHSize chart data
             let HHSizeArray = [];
-            let HHlargerThanFive = 0
+            let HHlargerThanFive = 0;
             for(let i in tripsDataset[selectedZone]['HHSize']){
                 //combine the value of 5+ condition
                 if(Number(i)>=5){
@@ -434,7 +445,6 @@ require([
                 }
             }
             HHSizeArray.push(['5+',HHlargerThanFive]);//add 5+ data to the autoArray
-            console.log(HHSizeArray)
             HHChart.series[0].setData(HHSizeArray);
             HHChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(HHSizeArray)[0])
             //update trips by purpose chart data
@@ -455,48 +465,36 @@ require([
                     modeArray.push([i,tripsDataset[selectedZone]['Mode'][i]]);}
                 modeChart.series[0].setData(getKeysValuesOfTripsObject(modeArray)[1]);
                 modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
-
             }
-
             else{
                 /**Start of Special Mode Chart*/
                 let selfDefinedMode = {'Bike':0,'Driver':0,'Transit':0,'School Bus':0,'Passenger':0,'Walk':0};
                 for(let i in tripsDataset[selectedZone]['Mode']){
-
                     if(i==='Bike'){
                         selfDefinedMode['Bike']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
                     else if(i==='SOV'){
                         selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
                     else if(i==='WAT'){
                         selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
                     else if(i==='PNR'){
                         selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
                     else if(i==='SB'){
                         selfDefinedMode['School Bus']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
-
                     else if(i==='HOV2'){
                         selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/2
                         selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]/2
-
                     }
                     else if(i==='HOV3'){
                         selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/3.2
                         selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]*2.2/3.2
-
                     }
                     else if(i==='Walk'){
                         selfDefinedMode['Walk']+=tripsDataset[selectedZone]['Mode'][i]
-
                     }
                     else if(i==='KNR'){
                         selfDefinedMode['Transit']+=tripsDataset[selectedZone]['Mode'][i]
@@ -510,7 +508,6 @@ require([
                 modeChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(modeArray)[0]);
                 /**End of Special Mode Chart*/
             }
-
         }
     }
 });
@@ -579,15 +576,11 @@ function updateBulletChart(){
             plotBands: [{
                 from: 0,
                 to: 30,
-                color: '#666'
-            }, {
-                from: 30,
-                to: 60,
                 color: '#999'
             }, {
-                from: 60,
-                to: 900,
-                color: '#bbb'
+                from: 30,
+                to: 1000000000,
+                color: '#999'
             }],
             labels: {
                 format: '{value}'
@@ -595,7 +588,14 @@ function updateBulletChart(){
             title: null
         },
         xAxis: {
-            categories: ['Average Travel  <br/>Distance (km)']
+            categories: ['Average Travel  <br/>Distance (km)'],
+            labels: {
+                style: {
+                    color: '#212d7a',
+                    fontWeight: 'bold',
+                    textDecoration:'underline'
+                }
+            }
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
@@ -650,6 +650,10 @@ function updateBulletChart(){
                         text: ' Travel distance (km)'
                     }
                 },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">Amount</span>: <b>{point.y:0.2f}</b><br/>'
+                },
                 legend: {
                     enabled: false
                 },
@@ -664,20 +668,20 @@ function updateBulletChart(){
                         style: {
                             fontSize: '8px',
                             textOverflow: 'clip'
-
-
                         }
                     }
                 }]
             });
+            //<rect fill="#f7f7f7" class='highcharts-button-box' x='0.5' y='0.5' width='44' height='34' rx='2' ry='2' stroke='#cccccc' stroke-width="1"></rect>
             //add click label event to the dist by purpose chart
             //if the user clicks on this drillDownDistChart's labels, the updateBulletChart function will be called again.
             //it is a self-perpetuate feature
-            drillDownDistChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
-            {
-                label.style.cursor = "pointer";
-                label.onclick = function() {updateBulletChart()}
+            $('#avgDist').append("<button class='back' id='backButton'>Back</button>");
+            $('#backButton').on('click',function(e){
+                $("#backButton").remove();
+                updateBulletChart()
             })
+
         }
     });
     //draw average green house gas emission chart
@@ -686,13 +690,20 @@ function updateBulletChart(){
             marginTop: 20
         },
         xAxis: {
-            categories: ['Average Greenhouse  <br/>Gas (kg)']
+            categories: ['Average GHG (kg)'],
+            labels: {
+                style: {
+                    color: '#212d7a',
+                    fontWeight: 'bold',
+                    textDecoration:'underline'
+                }
+            }
         },
         yAxis: {
             plotBands: [{
                 from: 0,
                 to: 10,
-                color: '#666'
+                color: '#999'
             }, {
                 from: 10,
                 to: 10000000,
@@ -712,9 +723,42 @@ function updateBulletChart(){
             pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
         },
     });
+    //draw total employment bullet chart
+    let totalEmp = Highcharts.chart('totalEmp', {
+        chart: {
+            marginTop: 20
+        },
+        xAxis: {
+            categories: ['Total Jobs'],
+            labels: {
+                style: {
+                    color: '#212d7a',
+                    fontWeight: 'bold',
+                    textDecoration:'underline'
+                }
+            }
+        },
+        yAxis: {
+            plotBands: [{
+                from: 0,
+                to: 1000000000000000,
+                color: '#999'
+            }],
+            title: null
+        },
+        series: [{
+            data: [{
+                y: Number(popEmpDataset[selectedZone]['Jobs']),
+                target: 0,
+            }]
+        }],
+        tooltip: {
+            pointFormat: '<b>{point.y}</b> (with target at {point.target})'
+        }
+    });
     //add drilldown event to the label of the chart
     ghgChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
-    {
+    {   console.log(1111)
         label.style.cursor = "pointer";
         label.onclick = function() {
             $('#avgGHG').show();
@@ -750,6 +794,10 @@ function updateBulletChart(){
                         text: ' GHG emission(kg)'
                     }
                 },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">Amount</span>: <b>{point.y:0.2f}</b><br/>'
+                },
                 legend: {
                     enabled: false
                 },
@@ -762,47 +810,23 @@ function updateBulletChart(){
                         style: {
                             fontSize: '8px',
                             textOverflow: 'clip'
-
                         }
                     }
                 }]
             });
-            //add back to original event to the chart's label
-            drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
-            {
-                label.style.cursor = "pointer";
-                label.onclick = function() {updateBulletChart()}
+            $('#avgGHG').append("<button class='back' id='backButton'>Back</button>");
+            $('#backButton').on('click',function(e){
+                $("#backButton").remove();
+                updateBulletChart()
             })
-        }
-    });
-    //draw total employment bullet chart
-    let totalEmp = Highcharts.chart('totalEmp', {
-        chart: {
-            marginTop: 20
-        },
-        xAxis: {
-            categories: ['Total Jobs']
-        },
-        yAxis: {
-            plotBands: [{
-                from: 0,
-                to: 500,
-                color: '#666'
-            }, {
-                from: 500,
-                to: 100000000,
-                color: '#999'
-            }],
-            title: null
-        },
-        series: [{
-            data: [{
-                y: Number(popEmpDataset[selectedZone]['Jobs']),
-                target: 500,
-            }]
-        }],
-        tooltip: {
-            pointFormat: '<b>{point.y}</b> (with target at {point.target})'
+
+
+            // //add back to original event to the chart's label
+            // drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
+            // {
+            //     label.style.cursor = "pointer";
+            //     label.onclick = function() {updateBulletChart()}
+            // })
         }
     });
     //add drill down event
@@ -834,7 +858,6 @@ function updateBulletChart(){
                             fontSize: '13px',
                             fontFamily: 'Verdana, sans-serif',
                             textOverflow: 'clip'
-
                         }
                     }
                 },
@@ -844,11 +867,14 @@ function updateBulletChart(){
                         text: ' GHG emission(kg)'
                     }
                 },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">Amount</span>: <b>{point.y:0.2f}</b><br/>'
+                },
                 legend: {
                     enabled: false
                 },
                 series: [{
-
                     data: ghgByPurpose,
                     dataLabels: {
                         enabled: true,
@@ -857,17 +883,17 @@ function updateBulletChart(){
                         style: {
                             fontSize: '8px',
                             textOverflow: 'clip'
-
                         }
                     }
                 }]
             });
             //add back event
-            drillDownGHGChart.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
-            {
-                label.style.cursor = "pointer";
-                label.onclick = function() {updateBulletChart()}
+            $('#totalEmp').append("<button class='back' id='backButton'>Back</button>");
+            $('#backButton').on('click',function(e){
+                $("#backButton").remove();
+                updateBulletChart()
             })
+
         }
     });
     //calculate population
@@ -881,16 +907,19 @@ function updateBulletChart(){
             marginTop: 20,
         },
         xAxis: {
-            categories: ['Total Population']
+            categories: ['Total Population'],
+            labels: {
+                style: {
+                    color: '#212d7a',
+                    fontWeight: 'bold',
+                    textDecoration:'underline'
+                }
+            }
         },
         yAxis: {
-            plotBands: [{
+            plotBands: [ {
                 from: 0,
-                to: 500,
-                color: '#666'
-            }, {
-                from: 500,
-                to: 100000000,
+                to: 100000000000000,
                 color: '#999'
             }],
             title: null
@@ -898,15 +927,16 @@ function updateBulletChart(){
         series: [{
             data: [{
                 y:popOfSelectedZone ,
-                target: 500,
-            }
-            ]
+                target: 0,
+            }]
         }],
         tooltip: {
             pointFormat: '<b>{point.y}</b> (with target at {point.target})'
         }
     });
     //add drill down event
+
+
     totalPop.xAxis[0].labelGroup.element.childNodes.forEach(function(label)
     {
         label.style.cursor = "pointer";
@@ -916,6 +946,7 @@ function updateBulletChart(){
             $('#avgDist').hide();
             $('#avgGHG').hide();
             $('#totalEmp').hide();
+
             let popDrilldown =Highcharts.chart('totalPop', {
                 chart: {
                     marginLeft: 3,
@@ -934,7 +965,6 @@ function updateBulletChart(){
                     variablepie: {
                         size:'60%',
                         allowPointSelect: true,
-                        cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
                             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
@@ -944,12 +974,7 @@ function updateBulletChart(){
                             textOverflow: 'clip'
 
                         },
-                        events: {
-                            //back event
-                            click: function (event) {
-                                updateBulletChart()
-                            }
-                        }
+
                     }
                 },
                 //Hard coding part. If your data structure change, you will have to change this part of code
@@ -1006,10 +1031,15 @@ function updateBulletChart(){
                     }]
                 }]
             });
+
+            $('#totalPop').append("<button class='back' id='backButton'>Back</button>");
+            $('#backButton').on('click',function(e){
+                $("#backButton").remove();
+                updateBulletChart()
+            });
         }
     });
 }
-
 //seperate a Trip object into a list of values and a list of keys
 function getKeysValuesOfTripsObject(obj){
     let keys = [];
@@ -1025,7 +1055,7 @@ function getKeysValuesOfObject(obj){
     let keys = [];
     let values = [];
     for(let k in obj){
-        keys.push(k)
+        keys.push(k);
         values.push(Number(obj[k]))
     }
     return [keys,values];
@@ -1047,9 +1077,9 @@ function convertCSVData(popEmpDataset) {
 }
 //generate drilldown series of 'Trips by purpose' chart
 function generateDrilldownSeries(distPurpArray){
-    let result = []
+    let result = [];
     for(let k in distPurpArray){
-        distArray = []
+        distArray = [];
         for(let distK in distPurpArray[k]){
             distArray.push({'name':distK,'y':distPurpArray[k][distK]})
         }
@@ -1061,7 +1091,6 @@ function generateDrilldownSeries(distPurpArray){
         })
     }
     return result
-
 }
 //get xAxis categories
 function getCategoriesOfDistByPurp(distPurpArray){
@@ -1072,5 +1101,4 @@ function getCategoriesOfDistByPurp(distPurpArray){
         }
         return result
     }
-
 }

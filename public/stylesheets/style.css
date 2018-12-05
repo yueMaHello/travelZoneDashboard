@@ -96,3 +96,16 @@ div.subchart {
   height: 50px;
   background-color:#999999
 }
+#changeMode{
+    z-index:1000;
+    position:absolute;
+    height:25px;
+    margin-top:10px;
+    margin-left:10px;
+}
+.back{
+  position:absolute;
+  margin-top:-300px;
+  margin-left:10px;
+  z-index:1000;
+}
