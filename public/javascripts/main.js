@@ -127,10 +127,6 @@ require([
                     categories: [],
                     tickmarkPlacement: 'on',
                     lineWidth: 0,
-                    // title: {
-                    //     text: 'Number of Dwelling Units',
-                    //     y:180
-                    // },
                 },
                 yAxis: {
                     gridLineInterpolation: 'polygon',
@@ -339,11 +335,13 @@ require([
                 },
 
             },
+            yAxis:{
+                text:''
+            },
             title: {
                 text: 'Trips By Purpose',
                 y: 40
             },
-
             plotOptions: {
                 pie: {
                     dataLabels: {
@@ -371,11 +369,9 @@ require([
             },
             drilldown:{
                 series: []
-            },
-
+            }
         });
         $('#changeMode').on('click',function(e){
-
             if(professionalTravelModeChart===false){
                 professionalTravelModeChart=true;
                 updateTravelModeChart(selectedZone);
@@ -384,8 +380,6 @@ require([
                 professionalTravelModeChart=false;
                 updateTravelModeChart(selectedZone);
             }
-
-
         });
 
         //update charts based on current selected zone
@@ -520,10 +514,9 @@ However, I didn't use the highchart's drill down function, since it is not very 
 I put four bullets chart into a single DIV, and I need each bullet chart being able to change itself to show a detailed bar/pie chart.
 I wrote my own drill down method.
 ***/
-
 function hideBulletChart(){
 
-    $('#avgDist').hide()
+    $('#avgDist').hide();
     $('#avgGHG').hide();
     $('#totalEmp').hide();
     $('#totalPop').hide();
