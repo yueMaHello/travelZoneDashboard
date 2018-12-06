@@ -401,9 +401,10 @@ require([
             let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
-                hideBulletChart()
+                hideCharts();
                 return
             }
+            showCharts();
             for(let i in tripsDataset[selectedZone]['Own']){
                 //combine the value of 5+ condition
                 if(i>=5){
@@ -514,12 +515,11 @@ However, I didn't use the highchart's drill down function, since it is not very 
 I put four bullets chart into a single DIV, and I need each bullet chart being able to change itself to show a detailed bar/pie chart.
 I wrote my own drill down method.
 ***/
-function hideBulletChart(){
-
-    $('#avgDist').hide();
-    $('#avgGHG').hide();
-    $('#totalEmp').hide();
-    $('#totalPop').hide();
+function hideCharts(){
+    $('.subchart').hide();
+}
+function showCharts(){
+    $('.subchart').show();
 }
 function updateBulletChart(){
     //set highcharts' feature to draw bullet chart
