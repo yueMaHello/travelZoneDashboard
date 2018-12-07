@@ -1078,6 +1078,7 @@ function convertCSVData(popEmpDataset) {
     }
     return tmpData
 }
+
 //generate drilldown series of 'Trips by purpose' chart
 function generateDrilldownSeries(distPurpArray){
     let result = [];
@@ -1105,3 +1106,40 @@ function getCategoriesOfDistByPurp(distPurpArray){
         return result
     }
 }
+
+
+
+$('#tour').on('click',function(e){
+    let intro1 = introJs();
+    intro1.setOptions({
+        tooltipPosition : 'bottom',
+        steps: [
+            {
+                element: '#title',
+                intro: 'Welcome to Travel Zone Dashboard! You could get trip and household information about each travel zone.',
+                position: 'top'
+            },
+            {
+                element: '#mapDiv',
+                intro: 'Please click on a travel zone.',
+                position: 'top'
+            },
+            {
+                element: '#tripsByPurpose',
+                intro: 'Now, you could click on a blue label to observe some details.',
+                position: 'top'
+            },
+            {
+                element: '#changeMode',
+                intro: 'Travel mode could switch between two set of categories. The data set is the same.',
+                position: 'top'
+            },
+            {
+                element: '#avgDist',
+                intro: 'Again, try to click on a blue label!',
+                position: 'top'
+            }
+        ]
+    });
+    intro1.start();
+});

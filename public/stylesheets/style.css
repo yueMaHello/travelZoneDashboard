@@ -109,3 +109,14 @@ div.subchart {
   margin-left:10px;
   z-index:1000;
 }
+#tour{
+  border-radius: 25px;
+  border: 2px solid #000000;
+  padding: 10px;
+  z-index:100;
+  position:absolute;
+  top:15px;
+  right:10px;
+  cursor:pointer;
+
+}
