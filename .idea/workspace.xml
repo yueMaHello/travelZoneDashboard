@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="899e5cbc-189c-49bf-ba87-5736ec67466a" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/public/externalJS/intro.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/stylesheets/introjs-modern.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/stylesheets/introjs.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/stylesheets/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/stylesheets/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stylesheets/introjs-modern.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/externalStylesheet/introjs-modern.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stylesheets/introjs.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/externalStylesheet/introjs.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -25,7 +23,7 @@
       <file leaf-file-name="RTM3_Emp_2015.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/data/RTM3_Emp_2015.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
+            <state relative-caret-position="-616">
               <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
             </state>
           </provider>
@@ -34,8 +32,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="550">
-              <caret line="64" column="10" lean-forward="true" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
+            <state relative-caret-position="940">
+              <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
             </state>
           </provider>
         </entry>
@@ -79,8 +77,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="588">
-              <caret line="1138" column="48" selection-start-line="1138" selection-start-column="48" selection-end-line="1138" selection-end-column="48" />
+            <state relative-caret-position="412">
+              <caret line="1130" column="14" lean-forward="true" selection-start-line="1130" selection-start-column="14" selection-end-line="1130" selection-end-column="14" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
@@ -99,7 +97,7 @@
         </entry>
       </file>
       <file leaf-file-name="introjs-modern.css" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/stylesheets/introjs-modern.css">
+        <entry file="file://$PROJECT_DIR$/public/externalStylesheet/introjs-modern.css">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="616">
               <caret line="28" column="13" lean-forward="true" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
@@ -108,7 +106,7 @@
         </entry>
       </file>
       <file leaf-file-name="introjs.css" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/stylesheets/introjs.css">
+        <entry file="file://$PROJECT_DIR$/public/externalStylesheet/introjs.css">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="440">
               <caret line="59" column="34" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
@@ -191,9 +189,9 @@
         <option value="$PROJECT_DIR$/public/externalJS/intro.js" />
         <option value="$PROJECT_DIR$/public/stylesheets/style.css" />
         <option value="$PROJECT_DIR$/public/stylesheets/introjs-modern.css" />
-        <option value="$PROJECT_DIR$/views/index.html" />
         <option value="$PROJECT_DIR$/public/stylesheets/introjs.css" />
         <option value="$PROJECT_DIR$/public/javascripts/main.js" />
+        <option value="$PROJECT_DIR$/views/index.html" />
       </list>
     </option>
   </component>
@@ -211,9 +209,9 @@
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="y" value="5" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-13" />
+    <option name="y" value="1" />
     <option name="width" value="1936" />
     <option name="height" value="1050" />
   </component>
@@ -285,11 +283,11 @@
       <recent name="C:\Users\tsengineer\Desktop\yuema\generalHeatmap\public\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\tsengineer\Desktop\yuema\travelzoneDashboard\public\externalStylesheet" />
       <recent name="C:\Users\tsengineer\Desktop\yuema\travelzoneDashboard\public\stylesheets" />
       <recent name="C:\Users\tsengineer\Desktop\yuema\travelzoneDashboard\public\outputData" />
       <recent name="C:\Users\tsengineer\Desktop\yuema\travelzoneDashboard\public\data" />
       <recent name="C:\Users\tsengineer\Desktop\yuema\DistrictDashboard\public" />
-      <recent name="C:\Users\tsengineer\Desktop\yuema\DistrictDashboard\public\data" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -322,15 +320,15 @@
       <workItem from="1540414453984" duration="33803000" />
       <workItem from="1540574679754" duration="109314000" />
       <workItem from="1541518862886" duration="1486000" />
-      <workItem from="1541528609892" duration="81034000" />
+      <workItem from="1541528609892" duration="86234000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="258263000" />
+    <option name="totallyTimeSpent" value="263463000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1890625" />
@@ -550,13 +548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/data/DwellingType_2015_RTM3.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/data/Population_2015_RTM3.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -571,13 +562,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/data/RTM3_Emp_2015.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/stylesheets/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="945">
@@ -585,24 +569,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/stylesheets/introjs-modern.css">
+    <entry file="file://$PROJECT_DIR$/public/externalStylesheet/introjs-modern.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="616">
           <caret line="28" column="13" lean-forward="true" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/stylesheets/introjs.css">
+    <entry file="file://$PROJECT_DIR$/public/externalStylesheet/introjs.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
           <caret line="59" column="34" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.html">
+    <entry file="file://$PROJECT_DIR$/public/data/RTM3_Emp_2015.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="64" column="10" lean-forward="true" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
+        <state relative-caret-position="-616">
+          <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -613,10 +597,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/data/DwellingType_2015_RTM3.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="940">
+          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="1138" column="48" selection-start-line="1138" selection-start-column="48" selection-end-line="1138" selection-end-column="48" />
+        <state relative-caret-position="412">
+          <caret line="1130" column="14" lean-forward="true" selection-start-line="1130" selection-start-column="14" selection-end-line="1130" selection-end-column="14" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />

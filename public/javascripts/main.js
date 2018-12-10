@@ -1121,7 +1121,7 @@ $('#tour').on('click',function(e){
             },
             {
                 element: '#mapDiv',
-                intro: 'Please click on a travel zone.',
+                intro: 'Please click on a travel zone. If there is no data of that zone, please try another zone.',
                 position: 'top'
             },
             {
