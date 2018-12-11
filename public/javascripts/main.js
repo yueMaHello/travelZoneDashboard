@@ -173,7 +173,7 @@ require([
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Amount',
+                    text: 'Total',
                 },
                 labels: {
                     overflow: 'justify'
@@ -197,7 +197,7 @@ require([
                 enabled: false
             },
             series: [{
-                name:'Amount',
+                name:'Total',
                 type: 'column',
                 data:  '',
                 showInLegend: false
@@ -217,7 +217,7 @@ require([
                 categories: []
             },
             series: [{
-                name:'Amount',
+                name:'Total',
                 type: 'column',
                 colorByPoint: true,
                 data: [],
@@ -268,8 +268,8 @@ require([
                 }
             },
             tooltip: {
-                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0.2f}%</b> of total<br/>'
+
+                pointFormat: ' <b>{point.y:0.2f}%</b> of total<br/>'
             },
             series: [
                 {
@@ -296,11 +296,11 @@ require([
             },
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">Amount</span>: <b>{point.y}</b><br/>'
+                pointFormat: '<span style="color:{point.color}">Total</span>: <b>{point.y}</b><br/>'
             },
             yAxis: {
                 title: {
-                    text:'Amount'
+                    text:'Total'
                 }
             },
             legend: {
