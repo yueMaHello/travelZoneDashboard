@@ -4,6 +4,7 @@
  * The webpage layout is coded in './views/index.html' and './public/stylesheets/style.css'.
  * If you want to change the position of the charts, it is quite simple and I will explain it in 'index.html'
  */
+let travelZoneLayerID = 'TAZ_New';
 let tripsDataset; //store ./outputData/output.json
 let popEmpDataset;//store ./data/RTM3_Emp_2015.csv
 let populationBreakdown;//store ./data/Population_2015_RTM3.csv
@@ -89,7 +90,7 @@ require([
 
         //add onclick event of district layer
         travelZoneLayer.on('click',function(e){
-            selectedZone = e.graphic.attributes["TAZ_New"];//get selected zone
+            selectedZone = e.graphic.attributes[travelZoneLayerID];//get selected zone
             // Draw the chart and set the chart values
             drawChart(selectedZone);
             if(selectedDistrictLayer){

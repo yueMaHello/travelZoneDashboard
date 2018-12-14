@@ -16,7 +16,7 @@ const LineByLineReader = require('line-by-line');
  */
 var port = normalizePort(process.env.PORT || '3043');
 app.set('port', port);
-console.log('The app is running on port '+port);
+
 
 
 /**
@@ -56,6 +56,7 @@ rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
                 }
             });
             console.log('Json file has been saved');
+            console.log('The app is running on port '+port);
             //start the server
             server.listen(port);
             server.on('error', onError);
@@ -63,6 +64,7 @@ rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
         });
     }
     else{//the user hasn't updated the trips_1.csv dataset
+        console.log('The app is running on port '+port);
         server.listen(port);
         server.on('error', onError);
         server.on('listening', onListening);
