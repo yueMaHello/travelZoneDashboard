@@ -43,7 +43,6 @@ rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
         lr.on('error',function(err){});
         lr.on('line',function(line) {
             line = line.split(",");
-            console.log(line[6]);
             initializeData(line)
         });
         //finish reading. Write the result into output.json file

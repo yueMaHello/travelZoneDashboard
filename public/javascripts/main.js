@@ -11,6 +11,7 @@ let populationBreakdown;//store ./data/Population_2015_RTM3.csv
 let dwellingTypeDataset; //store ./data/DwellingType_2015_RTM3.csv
 let selectedZone = '101';//store the zone being selected, default zone is '101'
 let professionalTravelModeChart = false;
+//the selectedDistrictLayer is used to record the selected zone and highlight it with some special color.
 let selectedDistrictLayer;
 //If trips_1.csv uses other categories (not 'P','C','W'....'S'), the dictionary should be edited correspondingly
 let purposeDict = {
@@ -45,7 +46,9 @@ require([
     //after read the data, call loadData.
     function loadData(error,outputData,popEmpData,popBreak,dwellingData){
         //store data into global variables
+
         tripsDataset = outputData;
+        //The json object we got from d3.queue() is not perfectly fine for our purpose. So we use convertCSVData function to convert all the json object into desirable format.
         popEmpDataset = convertCSVData(popEmpData);
         populationBreakdown = convertCSVData(popBreak);
         dwellingTypeDataset = convertCSVData(dwellingData);
@@ -60,6 +63,7 @@ require([
         let travelZoneLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/newestTAZ/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
+            //you could try to uncomment the line below. Clicking on map, it will show an infowindow.
             // infoTemplate:new InfoTemplate("Attributes", "Travel Zone:${TAZ_New}")
         });
         //LRT layer
@@ -67,6 +71,7 @@ require([
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
         });
+        //edmonton hydro layer
         let hydroLayer = new FeatureLayer("https://services8.arcgis.com/FCQ1UtL7vfUUEwH7/arcgis/rest/services/edmontonHydro/FeatureServer/0",{
             mode: FeatureLayer.MODE_SNAPSHOT,
             outFields: ["*"],
@@ -90,23 +95,11 @@ require([
 
         //add onclick event of district layer
         travelZoneLayer.on('click',function(e){
-            selectedZone = e.graphic.attributes[travelZoneLayerID];//get selected zone
+            //get clicked zone's ID
+            selectedZone = e.graphic.attributes[travelZoneLayerID];
             // Draw the chart and set the chart values
             drawChart(selectedZone);
-            if(selectedDistrictLayer){
-                map.removeLayer(selectedDistrictLayer);
-            }
-            selectedDistrictLayer = new GraphicsLayer({ id: "selectedDistrictLayer" });
-            let highlightSymbol = new SimpleFillSymbol(
-                SimpleFillSymbol.STYLE_SOLID,
-                new SimpleLineSymbol(
-                    SimpleLineSymbol.STYLE_SOLID,
-                    new Color([255,0,0,0.5]), 2
-                ),
-                new Color([255,0,0,0.5])
-            );
-            let graphic = new Graphic(e.graphic.geometry, highlightSymbol);
-            selectedDistrictLayer.add(graphic);
+            redrawHighlightDistrict(e);
             map.addLayer(selectedDistrictLayer);
         });
 
@@ -372,6 +365,7 @@ require([
                 series: []
             }
         });
+        //if the user click on the 'Change View' button, change the chart's attribute
         $('#changeMode').on('click',function(e){
             if(professionalTravelModeChart===false){
                 professionalTravelModeChart=true;
@@ -382,11 +376,29 @@ require([
                 updateTravelModeChart(selectedZone);
             }
         });
+        function redrawHighlightDistrict(e){
+            //if there is a highlighted polygon, delete it
+            if(selectedDistrictLayer){
+                map.removeLayer(selectedDistrictLayer);
+            }
+            //redraw the highlighted polygon based on current selection
+            selectedDistrictLayer = new GraphicsLayer({ id: "selectedDistrictLayer" });
+            let highlightSymbol = new SimpleFillSymbol(
+                SimpleFillSymbol.STYLE_SOLID,
+                new SimpleLineSymbol(
+                    SimpleLineSymbol.STYLE_SOLID,
+                    new Color([255,0,0,0.5]), 2
+                ),
+                new Color([255,0,0,0.5])
+            );
+            let graphic = new Graphic(e.graphic.geometry, highlightSymbol);
+            selectedDistrictLayer.add(graphic);
+        }
 
         //update charts based on current selected zone
-        //This function will be called whenever the user changes his selection.
+        //This function will be called whenever the user clicks on a new district.
         function drawChart(selectedZone){
-            //automatically click drilldown back button
+            //automatically click drilldown back button so that the tripsByPurpose chart will always show a pie chart when the user changes the selection
             $('.highcharts-drillup-button').click();
             //update dwelling chart data
             dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
@@ -402,10 +414,15 @@ require([
             let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
                 alert('There is no trip data of your selected zone!');
+                //hide all charts
                 hideCharts();
                 return
             }
-            showCharts();
+            else{
+                //show all charts
+                showCharts();
+            }
+            //if the household size is larger than 5, then combine them to a '5+' column
             for(let i in tripsDataset[selectedZone]['Own']){
                 //combine the value of 5+ condition
                 if(i>=5){
@@ -418,42 +435,15 @@ require([
             autoArray.push(['5+',largerThanFive]);//add 5+ data to the autoArray
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
+            //update travel mode chart
             updateTravelModeChart(selectedZone);
             //update income chart data
-            let incomeSum=0;
-            for (let i in tripsDataset[selectedZone]['IncGrp']){
-                incomeSum += tripsDataset[selectedZone]['IncGrp'][i];
-            }
-            let incomeArray = [];
-            for(let i in tripsDataset[selectedZone]['IncGrp']){
-                incomeArray.push([incomeDict[i],tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
-            }
-            incomeChart.series[0].setData(incomeArray);
-
+            updateIncomeChart(selectedZone);
             //update HHSize chart data
-            let HHSizeArray = [];
-            let HHlargerThanFive = 0;
-            for(let i in tripsDataset[selectedZone]['HHSize']){
-                //combine the value of 5+ condition
-                if(Number(i)>=5){
-                    HHlargerThanFive+=tripsDataset[selectedZone]['HHSize'][i];
-                }
-                else{
-                    HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
-                }
-            }
-            HHSizeArray.push(['5+',HHlargerThanFive]);//add 5+ data to the autoArray
-            HHChart.series[0].setData(HHSizeArray);
-            HHChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(HHSizeArray)[0])
+            updateHHChart(selectedZone);
+
             //update trips by purpose chart data
-            let tripsByPurposeArray = [];
-            for(let i in tripsDataset[selectedZone]['TourPurp']){
-                tripsByPurposeArray.push({'name':purposeDict[i],'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
-            }
-            tripsByPurposeChart.xAxis[0].setCategories(getCategoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
-            //update drilldown data of trips by purpose chart
-            tripsByPurposeChart.options.drilldown.series = generateDrilldownSeries(tripsDataset[selectedZone]['TourDistByPurp']);
-            tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
+            updateTripsChart(selectedZone);
             updateBulletChart();
         }
         function updateTravelModeChart(selectedZone){
@@ -507,6 +497,43 @@ require([
                 /**End of Special Mode Chart*/
             }
         }
+        function updateIncomeChart(selectedZone){
+            let incomeSum=0;
+            for (let i in tripsDataset[selectedZone]['IncGrp']){
+                incomeSum += tripsDataset[selectedZone]['IncGrp'][i];
+            }
+            let incomeArray = [];
+            for(let i in tripsDataset[selectedZone]['IncGrp']){
+                incomeArray.push([incomeDict[i],tripsDataset[selectedZone]['IncGrp'][i]*100/incomeSum]);
+            }
+            incomeChart.series[0].setData(incomeArray);
+        }
+        function updateHHChart(selectZone){
+            let HHSizeArray = [];
+            let HHlargerThanFive = 0;
+            for(let i in tripsDataset[selectedZone]['HHSize']){
+                //combine the value of 5+ condition
+                if(Number(i)>=5){
+                    HHlargerThanFive+=tripsDataset[selectedZone]['HHSize'][i];
+                }
+                else{
+                    HHSizeArray.push([i,tripsDataset[selectedZone]['HHSize'][i]])
+                }
+            }
+            HHSizeArray.push(['5+',HHlargerThanFive]);//add 5+ data to the autoArray
+            HHChart.series[0].setData(HHSizeArray);
+            HHChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(HHSizeArray)[0])
+        }
+        function updateTripsChart(selectZone){
+            let tripsByPurposeArray = [];
+            for(let i in tripsDataset[selectedZone]['TourPurp']){
+                tripsByPurposeArray.push({'name':purposeDict[i],'y':tripsDataset[selectedZone]['TourPurp'][i],'drilldown':i})
+            }
+            tripsByPurposeChart.xAxis[0].setCategories(getCategoriesOfDistByPurp(tripsDataset[selectedZone]['TourDistByPurp']));
+            //update drilldown data of trips by purpose chart
+            tripsByPurposeChart.options.drilldown.series = generateDrilldownSeries(tripsDataset[selectedZone]['TourDistByPurp']);
+            tripsByPurposeChart.series[0].setData(tripsByPurposeArray);
+        }
     }
 });
 
@@ -522,6 +549,7 @@ function hideCharts(){
 function showCharts(){
     $('.subchart').show();
 }
+
 function updateBulletChart(){
     //set highcharts' feature to draw bullet chart
     Highcharts.setOptions({
@@ -626,7 +654,7 @@ function updateBulletChart(){
             $('#totalPop').hide();
             let distByPurpose = [];
             for(let purp in tripsDataset[selectedZone]['TourPurp']){
-                distByPurpose.push([purposeDict[purp],tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['Person#'][purp]])
+                distByPurpose.push([purposeDict[purp],tripsDataset[selectedZone]['Dist'][purp]/tripsDataset[selectedZone]['TourPurp'][purp]])
             }
             //update the avgDist chart to a dist by purpose
             let drillDownDistChart = Highcharts.chart('avgDist', {
