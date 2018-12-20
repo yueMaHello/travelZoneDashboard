@@ -401,15 +401,21 @@ require([
             //automatically click drilldown back button so that the tripsByPurpose chart will always show a pie chart when the user changes the selection
             $('.highcharts-drillup-button').click();
             //update dwelling chart data
-            dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
-            dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
-            if(dwellingChart.yAxis[0].getExtremes().dataMax === 0){
-                dwellingChart.yAxis[0].setExtremes(0,10);
-            }
-            else{
-                dwellingChart.yAxis[0].setExtremes();
-            }
+            updateDwellingChart(selectedZone);
             //update autoOwnerShip chart
+            updateAutoChart(selectedZone);
+            //update travel mode chart
+            updateTravelModeChart(selectedZone);
+            //update income chart data
+            updateIncomeChart(selectedZone);
+            //update HHSize chart data
+            updateHHChart(selectedZone);
+
+            //update trips by purpose chart data
+            updateTripsChart(selectedZone);
+            updateBulletChart();
+        }
+        function updateAutoChart(selectedZone){
             let autoArray= [];
             let largerThanFive = 0;
             if(typeof(tripsDataset[selectedZone])=== 'undefined'){
@@ -435,16 +441,18 @@ require([
             autoArray.push(['5+',largerThanFive]);//add 5+ data to the autoArray
             autoOwnershipChart.series[0].setData(getKeysValuesOfTripsObject(autoArray)[1]);
             autoOwnershipChart.xAxis[0].setCategories(getKeysValuesOfTripsObject(autoArray)[0]);
-            //update travel mode chart
-            updateTravelModeChart(selectedZone);
-            //update income chart data
-            updateIncomeChart(selectedZone);
-            //update HHSize chart data
-            updateHHChart(selectedZone);
+        }
+        function updateDwellingChart(selectedZone){
 
-            //update trips by purpose chart data
-            updateTripsChart(selectedZone);
-            updateBulletChart();
+            dwellingChart.series[0].setData(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[1]);
+            dwellingChart.xAxis[0].setCategories(getKeysValuesOfObject(dwellingTypeDataset[selectedZone])[0]);
+            //deal with 0 condition
+            if(dwellingChart.yAxis[0].getExtremes().dataMax === 0){
+                dwellingChart.yAxis[0].setExtremes(0,10);
+            }
+            else{
+                dwellingChart.yAxis[0].setExtremes();
+            }
         }
         function updateTravelModeChart(selectedZone){
             if(professionalTravelModeChart === false){
@@ -474,12 +482,12 @@ require([
                         selfDefinedMode['School Bus']+=tripsDataset[selectedZone]['Mode'][i]
                     }
                     else if(i==='HOV2'){
-                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/2
+                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/2;
                         selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]/2
                     }
                     else if(i==='HOV3'){
-                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/3.2
-                        selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]*2.2/3.2
+                        selfDefinedMode['Driver']+=tripsDataset[selectedZone]['Mode'][i]/3.2;
+                        selfDefinedMode['Passenger']+=tripsDataset[selectedZone]['Mode'][i]*2.2/3.2 //3.2 is defined by assumptions from Joydip
                     }
                     else if(i==='Walk'){
                         selfDefinedMode['Walk']+=tripsDataset[selectedZone]['Mode'][i]

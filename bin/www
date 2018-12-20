@@ -69,6 +69,8 @@ rl.question('Did you renew the trips_1 dataset? (y/n)', (answer) => {
         server.on('listening', onListening);
     }
 });
+//Important! When new data (trips_1.csv) comes in, always check the following categories.  The keys have to be exactly the same (including spelling, upper/lower case etc).
+// //Make sure the categories cover the range of values in the data.
 function initializeData(line){
     //if this zone hasn't been initialized
     if (!(line[6] in data)) {
